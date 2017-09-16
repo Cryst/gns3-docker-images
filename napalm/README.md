@@ -7,6 +7,7 @@ the sources at https://github.com/napalm-automation .
 
 This appliance contains the following networking tools:
 
+- Python 3
 - NAPALM
 - Netmiko
 - net-tools (basic network administration tools)
