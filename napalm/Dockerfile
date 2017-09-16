@@ -4,8 +4,8 @@ FROM ehlers/ipterm-base
 
 RUN set -ex \
     && apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get -y install \
-       python3 python3-pip python3-setuptools python3-cryptography \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends install \
+       python3 python3-pip python3-setuptools python3-cryptography python3-cffi \
     && DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends install \
        python3-dev gcc \
     && pip3 install --no-cache-dir napalm \
