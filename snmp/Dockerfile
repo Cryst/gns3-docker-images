@@ -6,9 +6,10 @@ RUN set -ex \
 #
 # install snmp tools
 #
+    && export DEBIAN_FRONTEND=noninteractive \
     && sed -i -e '/^deb / s/$/ non-free/' /etc/apt/sources.list \
     && apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends install \
+    && apt-get -y --no-install-recommends install \
         snmp snmp-mibs-downloader libqtgui4 lxterminal jwm menu leafpad \
     && rm -rf /var/lib/apt/lists/* \
     && sed -i -e 's/^mibs/#mibs/' /etc/snmp/snmp.conf \

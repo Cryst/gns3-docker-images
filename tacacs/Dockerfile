@@ -6,8 +6,9 @@ RUN set -ex \
 #
 # install tacacs+ server
 #
+    && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends install \
+    && apt-get -y --no-install-recommends install \
         net-tools iproute2 telnet inetutils-ping traceroute procps nano vim-tiny \
         dumb-init tacacs+ \
     && rm -rf /var/lib/apt/lists/* \

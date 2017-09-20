@@ -3,8 +3,9 @@
 FROM ehlers/ipterm-base
 
 RUN set -ex \
+    && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends install \
+    && apt-get -y --no-install-recommends install \
        python python-crypto python-ecdsa tcpdump \
        python-pip python-setuptools python-wheel \
     && pip install --quiet --no-cache-dir scapy \

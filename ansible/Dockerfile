@@ -5,16 +5,17 @@ RUN set -ex \
 #
 # install ansible
 #
+    && export DEBIAN_FRONTEND=noninteractive \
     && echo "deb [trusted=yes] http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main" > /etc/apt/sources.list.d/ansible.list \
     && apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends install \
+    && apt-get -y --no-install-recommends install \
        ansible \
 #
 # install dependencies for junos network modules
 #
-    && DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends install \
+    && apt-get -y --no-install-recommends install \
        python-lxml python-netaddr python-scp python-serial \
-    && DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends install \
+    && apt-get -y --no-install-recommends install \
        python-pip python-wheel \
     && pip install --no-cache-dir ncclient jxmlease junos-eznc \
     && apt-get autoremove -y --purge python-pip python-wheel \

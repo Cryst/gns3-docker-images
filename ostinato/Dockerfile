@@ -8,12 +8,13 @@ RUN set -ex \
 #
 # install ostinato
 #
+    && export DEBIAN_FRONTEND=noninteractive \
     && echo 'wireshark-common wireshark-common/install-setuid boolean false' | debconf-set-selections \
     && apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends install \
+    && apt-get -y --no-install-recommends install \
         net-tools iproute2 telnet inetutils-ping traceroute procps nano vim-tiny \
         dumb-init /tmp/ostinato*.deb wireshark tshark lxterminal jwm menu leafpad \
-    && DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends install \
+    && apt-get -y --no-install-recommends install \
         python python-pip python-setuptools python-wheel python-protobuf \
     && pip install --no-cache-dir /tmp/python-ostinato*.tar.gz \
     && rm -rf /var/lib/apt/lists/* \

@@ -4,9 +4,10 @@ RUN set -ex \
 #
 # install ftp, tftp and ssh server
 #
+    && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && echo 'proftpd-basic shared/proftpd/inetd_or_standalone string standalone' | debconf-set-selections \
-    && DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends install \
+    && apt-get -y --no-install-recommends install \
         net-tools inetutils-ping procps nano vim-tiny \
         dumb-init proftpd-basic tftpd-hpa openssh-server \
     && rm -rf /var/lib/apt/lists/* \
