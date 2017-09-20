@@ -6,9 +6,6 @@ RUN set -ex \
     && apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends install \
         curl ca-certificates \
-# openssl is fine with perl-base, saves 40 MByte
-    && sed -i '/^Package: openssl$/,/^Depends: / s/perl\([ ,]\|$\)/perl-base\1/' /var/lib/dpkg/status \
-    && apt-get -y --purge autoremove perl \
 #
 # compile and install mtools (msend & mreceive)
 #
