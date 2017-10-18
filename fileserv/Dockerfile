@@ -8,8 +8,9 @@ RUN set -ex \
     && apt-get update \
     && echo 'proftpd-basic shared/proftpd/inetd_or_standalone string standalone' | debconf-set-selections \
     && apt-get -y --no-install-recommends install \
-        net-tools inetutils-ping procps nano vim-tiny \
         dumb-init proftpd-basic tftpd-hpa openssh-server \
+        net-tools iproute2 ifupdown isc-dhcp-client inetutils-ping \
+        telnet traceroute procps nano vim-tiny \
     && rm -rf /var/lib/apt/lists/* \
 #
 # setup ftp, tftp and openssh

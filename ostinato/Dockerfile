@@ -12,8 +12,9 @@ RUN set -ex \
     && echo 'wireshark-common wireshark-common/install-setuid boolean false' | debconf-set-selections \
     && apt-get update \
     && apt-get -y --no-install-recommends install \
-        net-tools iproute2 telnet inetutils-ping traceroute procps nano vim-tiny \
         dumb-init /tmp/ostinato*.deb wireshark tshark lxterminal jwm menu leafpad \
+        net-tools iproute2 ifupdown isc-dhcp-client inetutils-ping \
+        telnet traceroute procps nano vim-tiny \
     && apt-get -y --no-install-recommends install \
         python python-pip python-setuptools python-wheel python-protobuf \
     && pip install --no-cache-dir /tmp/python-ostinato*.tar.gz \

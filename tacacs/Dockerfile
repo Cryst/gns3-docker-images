@@ -9,8 +9,9 @@ RUN set -ex \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get -y --no-install-recommends install \
-        net-tools iproute2 telnet inetutils-ping traceroute procps nano vim-tiny \
         dumb-init tacacs+ \
+        net-tools iproute2 ifupdown isc-dhcp-client inetutils-ping \
+        telnet traceroute procps nano vim-tiny \
     && rm -rf /var/lib/apt/lists/* \
 #
 # tac_plus.conf template for do_auth

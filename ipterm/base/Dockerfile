@@ -28,6 +28,7 @@ RUN set -ex \
 # install remaining tools
 #
     && apt-get -y --no-install-recommends install \
-        net-tools iproute2 telnet inetutils-ping traceroute procps nano vim-tiny \
         dumb-init iperf3 knot-host mtr-tiny openssh-client socat tcpdump \
+        net-tools iproute2 ifupdown isc-dhcp-client inetutils-ping \
+        telnet traceroute procps nano vim-tiny \
     && rm -rf /var/lib/apt/lists/* \
