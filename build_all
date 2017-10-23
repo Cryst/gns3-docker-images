@@ -13,8 +13,9 @@ echo
 echo "*** ipterm"
 echo
 docker build $DOCKER_BUILD_OPTIONS -t ehlers/ipterm-base ipterm/base
-docker build $DOCKER_BUILD_OPTIONS -t ipterm ipterm/cli
-docker build $DOCKER_BUILD_OPTIONS -t webterm ipterm/web
+docker build $DOCKER_BUILD_OPTIONS -t ehlers/ipterm ipterm/cli
+docker build $DOCKER_BUILD_OPTIONS -t ehlers/webterm ipterm/web
+docker build $DOCKER_BUILD_OPTIONS -t ehlers/web_java ipterm/java
 
 for dockerfile in */Dockerfile; do
 	dir=`dirname $dockerfile`
