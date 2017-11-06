@@ -5,6 +5,11 @@ Java web start. Please note, that Firefox has disabled
 the Java plugin, so this is not included in this image.
 To ease the use with Cisco ASDM a laucher has been added.
 
+The directories /root and /etc/java-8-openjdk are persistent.
+That allows changes in the java configuration. For example
+MD5 can be allowed in /etc/java-8-openjdk/security/java.security,
+which is necessary to run ASDM v6.xxx.
+
 This appliance contains the following networking tools:
 
 - Firefox web browser

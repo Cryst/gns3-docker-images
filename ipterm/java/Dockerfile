@@ -42,3 +42,5 @@ javaws https://$asa_ip/admin/public/asdm.jnlp < /dev/null' \
 # startup script
 #
     && sed -i '/firefox/d' /etc/init.sh
+
+VOLUME [ "/etc/java-8-openjdk" ]
