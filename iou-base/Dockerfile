@@ -4,9 +4,10 @@ FROM alpine
 # install iouyap, (frozen) ioutools and run-stop
 #
 RUN set -ex \
-    && dd if=/dev/zero bs=4 count=1 of=/etc/hostid \
+    && echo -ne '\x00\x00\x00\x00' > /etc/hostid \
     && apk add --update-cache iouyap \
-    && apk add --virtual build-deps py3-cx_freeze wget ca-certificates \
+    && apk add --virtual build-deps python3-dev gcc musl-dev wget ca-certificates \
+    && pip3 install --quiet --no-cache-dir cx_Freeze==5.0.2 \
 # install and freeze IOUtools
     && cd /tmp \
     && wget -q https://raw.githubusercontent.com/ehlers/IOUtools/master/iou_import \
@@ -14,7 +15,7 @@ RUN set -ex \
     && echo -e '\
 from cx_Freeze import setup, Executable\n\
 setup (\n\
-    options = { "build_exe": { "build_exe": "/usr/local/bin", "zip_exclude_packages": None, "zip_include_packages": "*" } },\n\
+    options = { "build_exe": { "build_exe": "/usr/local/bin", "silent": True, "zip_exclude_packages": None, "zip_include_packages": "*" } },\n\
     executables = [ Executable("iou_import"), Executable("iou_export") ]\n\
 )' \
         > setup.py \
@@ -30,6 +31,8 @@ setup (\n\
     && wget -q -O /usr/local/sbin/run-stop $url \
     && chmod 755 /usr/local/sbin/run-stop \
 # cleanup
+    && pip3 uninstall --quiet --yes cx_Freeze \
+    && rm -rf /root/.cache \
     && apk del build-deps \
     && rm -rf /var/cache/apk/*
 
