@@ -2,7 +2,7 @@
 
 FROM debian:stretch-slim
 
-COPY ostinato*.deb python-ostinato*.tar.gz /tmp/
+COPY ostinato*.deb python-ostinato*.tar.gz libpcap*.deb /tmp/
 
 RUN set -ex \
 #
@@ -12,7 +12,7 @@ RUN set -ex \
     && echo 'wireshark-common wireshark-common/install-setuid boolean false' | debconf-set-selections \
     && apt-get update \
     && apt-get -y --no-install-recommends install \
-        dumb-init /tmp/ostinato*.deb wireshark tshark lxterminal jwm menu leafpad \
+        dumb-init /tmp/ostinato*.deb /tmp/libpcap*.deb wireshark tshark dillo lxterminal jwm menu leafpad \
         net-tools iproute2 ifupdown isc-dhcp-client inetutils-ping \
         telnet traceroute procps nano vim-tiny \
     && apt-get -y --no-install-recommends install \
@@ -27,7 +27,7 @@ RUN set -ex \
  needs="x11"\\\n\
  section="Applications"\\\n\
  title="Ostinato"\\\n\
- command="ostinato"' \
+ command="ostinato > /var/log/ostinato.log 2>&1"' \
         > /etc/menu/ostinato \
     && /bin/echo -e '\
 ?package(wireshark):\\\n\
@@ -94,9 +94,7 @@ lxterminal -e true 2> /dev/null\n\
 \n\
 cd\n\
 export SHELL=/bin/bash\n\
-drone < /dev/null > /var/log/ostinato-drone.log 2>&1 &\n\
-sleep 0.5\n\
-ostinato &\n\
+ostinato > /var/log/ostinato.log 2>&1 &\n\
 jwm' \
         > /etc/init.sh && chmod +x /etc/init.sh
 
