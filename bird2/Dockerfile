@@ -4,31 +4,43 @@ FROM debian:stretch-slim
 
 RUN set -ex \
     && export DEBIAN_FRONTEND=noninteractive \
-#    && echo 'deb [trusted=yes] http://bird.network.cz/debian/ jessie main' > /etc/apt/sources.list.d/bird.list \
     && apt-get update \
+#
+# download, compile and install bird v2
+#
+    && apt-get -y --no-install-recommends install libreadline7 \
+    && dpkg-query -f '${binary:Package}\n' -W | sort > base_packages \
     && apt-get -y --no-install-recommends install \
-        bird \
+        curl gcc libc6-dev make bison flex libncurses-dev libreadline-dev \
+    && curl -s -S ftp://bird.network.cz/pub/bird/bird-2.0.2.tar.gz | tar xz \
+    && cd bird* \
+    && ./configure --sysconfdir='${prefix}/etc/bird'\
+    && make \
+    && strip -s bird* \
+    && make install \
+    && cd .. \
+    && rm -rf bird* \
+    && dpkg-query -f '${binary:Package}\n' -W | sort > packages \
+    && apt-get -y purge \
+        `comm -13 base_packages packages` \
+    && rm -f base_packages packages \
+#
+# install remaining tools
+#
+    && apt-get -y --no-install-recommends install \
         net-tools iproute2 ifupdown isc-dhcp-client inetutils-ping \
         telnet traceroute procps nano vim-tiny \
     && rm -rf /var/lib/apt/lists/* \
-    && mv /etc/bird/bird.conf /etc/bird/bird.conf.example \
-    && mv /etc/bird/bird6.conf /etc/bird/bird6.conf.example \
+#
+# setup BIRD
+#
     && /bin/echo -e '\
 \x23!/bin/sh\n\
 \n\
-\x23 start bird daemon\n\
-cd /etc/bird\n\
-mkdir -p /run/bird\n\
-[ -x /etc/bird/start.sh ] && /etc/bird/start.sh\n\
-\n\
+bird\n\
+cd /usr/local/etc/bird\n\
 exec bash -i' \
         > /etc/init.sh && chmod +x /etc/init.sh \
-    && /bin/echo -e '\
-\x23!/bin/sh\n\
-\n\
-[ -s /etc/bird/bird.conf ] && bird\n\
-[ -s /etc/bird/bird6.conf ] && bird6' \
-        > /etc/bird/start.sh && chmod +x /etc/bird/start.sh \
     && /bin/echo -e '\
 \x23!/usr/bin/awk -f\n\
 \n\
@@ -53,5 +65,5 @@ BEGIN {\n\
 }' \
         > /usr/local/bin/create_routes && chmod +x /usr/local/bin/create_routes
 
-VOLUME [ "/etc/bird" ]
+VOLUME [ "/usr/local/etc/bird" ]
 CMD [ "/etc/init.sh" ]
