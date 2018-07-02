@@ -1,4 +1,5 @@
 #!/bin/sh
+[ $$ -eq 1 ] && exec tini -g -- sh "$0" "$@"
 
 NVRAM=${NVRAM:-64}
 MEM=${MEM:-256}
@@ -11,7 +12,7 @@ for if_eth in `sed -n 's/^ *\(eth[0-9]*\):.*/\1/p' /proc/net/dev`; do
 	ifconfig $if_eth down
 	sysctl -q -w net.ipv6.conf.$if_eth.disable_ipv6=1
 	ifconfig $if_eth mtu 9000 up
-        eth_ifs=$(($eth_ifs + 1))
+	eth_ifs=$(($eth_ifs + 1))
 done
 
 # update /etc/hosts
@@ -69,5 +70,21 @@ fi
 # start IOU
 hostname gns3vm
 stty intr undef quit undef susp undef
+sig_term=
+trap "sig_term=1" TERM
 iouyap 1000 > iouyap.log 2>&1 &
-exec iou.bin -e $eth_cntr -s $ser_cntr -n "$NVRAM" -m "$MEM" $ID
+iou.bin -e $eth_cntr -s $ser_cntr -n "$NVRAM" -m "$MEM" $ID
+
+# export configs from NVRAM
+iou_export $nvram_file startup-config private-config
+[ -f private-config -a `stat -c "%s" private-config` -le 5 ] && \
+	rm private-config
+owner=`stat -c "%u:%g" .`
+[ -f startup-config ] && chown "$owner" startup-config
+[ -f private-config ] && chown "$owner" private-config
+
+# don't close, if IOU is not terminated by SIGTERM (docker stop)
+if [ -z "$sig_term" ]; then
+	echo
+	read -p "Quit... "
+fi
