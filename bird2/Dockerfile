@@ -14,7 +14,7 @@ RUN set -ex \
         curl gcc libc6-dev make bison flex libncurses-dev libreadline-dev \
     && curl -s -S ftp://bird.network.cz/pub/bird/bird-2.0.2.tar.gz | tar xz \
     && cd bird* \
-    && ./configure --sysconfdir='${prefix}/etc/bird'\
+    && ./configure --sysconfdir='/etc/bird'\
     && make \
     && strip -s bird* \
     && make install \
@@ -38,7 +38,7 @@ RUN set -ex \
 \x23!/bin/sh\n\
 \n\
 bird\n\
-cd /usr/local/etc/bird\n\
+cd /etc/bird\n\
 exec bash -i' \
         > /etc/init.sh && chmod +x /etc/init.sh \
     && /bin/echo -e '\
@@ -65,5 +65,5 @@ BEGIN {\n\
 }' \
         > /usr/local/bin/create_routes && chmod +x /usr/local/bin/create_routes
 
-VOLUME [ "/usr/local/etc/bird" ]
+VOLUME [ "/etc/bird" ]
 CMD [ "/etc/init.sh" ]
