@@ -12,7 +12,9 @@ RUN set -ex \
     && dpkg-query -f '${binary:Package}\n' -W | sort > base_packages \
     && apt-get -y --no-install-recommends install \
         curl gcc libc6-dev make bison flex libncurses-dev libreadline-dev \
-    && curl -s -S ftp://bird.network.cz/pub/bird/bird-2.0.2.tar.gz | tar xz \
+    && latest=`curl -s -S ftp://bird.network.cz/pub/bird/ | sed -n 's/^.*LATEST-IS-\(2.*\)/\1/p'` \
+    && if [ -z "$latest" ]; then echo "Latest BIRD package not found" >&2; exit 1; fi \
+    && curl -s -S "ftp://bird.network.cz/pub/bird/bird-$latest.tar.gz" | tar xz \
     && cd bird* \
     && ./configure --sysconfdir='/etc/bird'\
     && make \
