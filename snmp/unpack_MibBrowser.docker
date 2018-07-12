@@ -1,0 +1,15 @@
+set -e -x
+
+owner=`stat -c "%u:%g" /extern`
+
+cd
+# unpack ManageEngine_MibBrowser_FreeTool_64bit.bin
+old_mode=`stat -c "%a" /extern/ManageEngine_MibBrowser_FreeTool_64bit.bin`
+chmod +x /extern/ManageEngine_MibBrowser_FreeTool_64bit.bin
+/extern/ManageEngine_MibBrowser_FreeTool_64bit.bin -silent
+chmod $old_mode /extern/ManageEngine_MibBrowser_FreeTool_64bit.bin
+
+# store as tar.gz
+cd ManageEngine/ManageEngine_Free_Tools/MibBrowser_Free_Tool
+tar cfz /extern/ManageEngine_MibBrowser_FreeTool_64bit.tar.gz *
+chown $owner /extern/ManageEngine_MibBrowser_FreeTool_64bit.tar.gz
