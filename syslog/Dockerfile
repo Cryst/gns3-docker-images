@@ -52,5 +52,5 @@ echo\n\
 exec bash -i' \
         > /etc/init.sh && chmod +x /etc/init.sh
 
-VOLUME [ "/root" ,"/var/log" ]
+VOLUME [ "/root", "/var/log" ]
 CMD [ "/etc/init.sh" ]
