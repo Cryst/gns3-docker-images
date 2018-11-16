@@ -19,6 +19,7 @@ RUN set -ex \
         python python-pip python-setuptools python-wheel python-protobuf \
     && pip install --no-cache-dir /tmp/python-ostinato*.tar.gz \
     && rm -rf /var/lib/apt/lists/* \
+    && ln -s /usr/bin/dillo /usr/local/bin/firefox \
 #
 # customize jwm menu
 #
