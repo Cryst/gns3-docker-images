@@ -7,33 +7,33 @@ if [ $# -lt 3 ]; then
 	exit 1
 fi
 
-temp=`mktemp -d /tmp/iou.XXXXXXXXXX`
+temp=$(mktemp -d /tmp/iou.XXXXXXXXXX)
 
 # copy image
-mkdir -p $temp/data/usr/local/bin
-cp -p "$1" $temp/data/usr/local/bin/iou.bin
-chmod 755 $temp/data/usr/local/bin/iou.bin
+mkdir -p "$temp/data/usr/local/bin"
+cp -p "$1" "$temp/data/usr/local/bin/iou.bin"
+chmod 755 "$temp/data/usr/local/bin/iou.bin"
 
 # copy license
-mkdir -p $temp/data/root
-cp -p "$2" $temp/data/root/.iourc
+mkdir -p "$temp/data/root"
+cp -p "$2" "$temp/data/root/.iourc"
 
 # copy configs
-mkdir -p $temp/data/iou
-cp -p "$3" $temp/data/iou/startup-config
-[ $# -ge 4 ] && cp -p "$4" $temp/data/iou/private-config
+mkdir -p "$temp/data/iou"
+cp -p "$3" "$temp/data/iou/startup-config"
+[ $# -ge 4 ] && cp -p "$4" "$temp/data/iou/private-config"
 
 # create Dockerfile
-cat > $temp/Dockerfile << 'EOF'
+cat > "$temp/Dockerfile" << 'EOF'
 FROM iou-base
 ADD data /
 VOLUME [ "/iou" ]
 EOF
 
 # create image
-image=`basename "$1" .bin | tr -c -s 'a-zA-Z0-9.\n' - | tr A-Z a-z`
+image=$(basename "$1" .bin | tr -c -s 'a-zA-Z0-9.\n' - | tr A-Z a-z)
 echo "Creating $image"
 echo
-docker build --force-rm -t "$image" $temp
+docker build --force-rm -t "$image" "$temp"
 
-rm -r $temp
+rm -r "$temp"

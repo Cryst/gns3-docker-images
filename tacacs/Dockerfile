@@ -2,7 +2,7 @@ FROM debian:stretch-slim
 
 COPY tac_passwd /usr/local/sbin/
 
-RUN set -ex \
+RUN set -e -x \
 #
 # install tacacs+ server
 #
@@ -16,9 +16,9 @@ RUN set -ex \
 #
 # tac_plus.conf template for do_auth
 #
-    && /bin/echo -e '\
-\x23 My simple tacplus config that never needs to change\n\
-\x23 See https://github.com/jathanism/do_auth\n\
+    && printf '\
+\043 My simple tacplus config that never needs to change\n\
+\043 See https://github.com/jathanism/do_auth\n\
 key = mykey\n\
 \n\
 accounting file = /var/log/tacplus.acct\n\
@@ -38,8 +38,8 @@ group = doauthaccess {\n\
 	}\n\
 \n\
 	enable = file /etc/tacacs+/passwd\n\
-	after authorization "do_auth -i $address -u '\''$user'\'' -d $name -l /var/log/do_auth.log -f /etc/tacacs+/do_auth.ini"\n\
-}' \
+	after authorization "do_auth -i '\''$address'\'' -u '\''$user'\'' -d '\''$name'\'' -l /var/log/do_auth.log -f /etc/tacacs+/do_auth.ini"\n\
+}\n' \
         > /etc/tacacs+/tac_plus.conf.do_auth \
 #
 # tacacs utilities
@@ -47,38 +47,38 @@ group = doauthaccess {\n\
     && chmod 755 /usr/local/sbin/tac_passwd \
     && ln -s tac_passwd /usr/local/sbin/tac_adduser \
     && ln -s tac_passwd /usr/local/sbin/tac_deluser \
-    && /bin/echo -e '\
-\x23!/bin/sh\n\
+    && printf '\
+\043!/bin/sh\n\
 \n\
-tac_plus -C /etc/tacacs+/tac_plus.conf -P' \
+tac_plus -C /etc/tacacs+/tac_plus.conf -P\n' \
         > /usr/local/sbin/tac_parse && chmod +x /usr/local/sbin/tac_parse \
-    && /bin/echo -e '\
-\x23!/bin/sh\n\
+    && printf '\
+\043!/bin/sh\n\
 \n\
-service tacacs_plus reload' \
+service tacacs_plus reload\n' \
         > /usr/local/sbin/tac_reload && chmod +x /usr/local/sbin/tac_reload \
-    && /bin/echo -e '\
-\x23!/bin/sh\n\
+    && printf '\
+\043!/bin/sh\n\
 \n\
-service tacacs_plus start' \
+service tacacs_plus start\n' \
         > /usr/local/sbin/tac_start && chmod +x /usr/local/sbin/tac_start \
-    && /bin/echo -e '\
-\x23!/bin/sh\n\
+    && printf '\
+\043!/bin/sh\n\
 \n\
-service tacacs_plus stop' \
+service tacacs_plus stop\n' \
         > /usr/local/sbin/tac_stop && chmod +x /usr/local/sbin/tac_stop \
     && chown -h root:root /usr/local/sbin/* \
 #
 # startup script
 #
-    && /bin/echo -e '\
-\x23!/bin/sh\n\
+    && printf '\
+\043!/bin/sh\n\
 [ $$ -eq 1 ] && exec dumb-init -- "$0" "$@"\n\
 \n\
 service tacacs_plus start\n\
 \n\
 cd /etc/tacacs+\n\
-exec bash -i' \
+exec bash -i\n' \
         > /etc/init.sh && chmod +x /etc/init.sh
 
 VOLUME [ "/etc/tacacs+" ]

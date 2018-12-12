@@ -2,7 +2,7 @@
 
 FROM debian:stretch-slim
 
-RUN set -ex \
+RUN set -e -x \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get -y --no-install-recommends install \
@@ -10,7 +10,7 @@ RUN set -ex \
 #
 # compile and install mtools (msend & mreceive)
 #
-    && dpkg-query -f '${binary:Package}\n' -W | sort > base_packages \
+    && dpkg-query -f '${binary:Package}\n' -W | sort > /tmp/base_packages \
     && apt-get -y --no-install-recommends install \
         gcc libc6-dev make \
     && curl -s -S -L https://github.com/troglobit/mtools/archive/v2.3.tar.gz | tar xfz - \
@@ -20,10 +20,9 @@ RUN set -ex \
     && mv /usr/local/sbin/mreceive /usr/local/sbin/msend /usr/local/bin/ \
     && cd .. \
     && rm -r mtools* \
-    && dpkg-query -f '${binary:Package}\n' -W | sort > packages \
-    && apt-get -y purge \
-        `comm -13 base_packages packages` \
-    && rm -f base_packages packages \
+    && dpkg-query -f '${binary:Package}\n' -W | sort > /tmp/packages \
+    && comm -13 /tmp/base_packages /tmp/packages | xargs apt-get -y purge \
+    && rm -f /tmp/base_packages /tmp/packages \
 #
 # install remaining tools
 #

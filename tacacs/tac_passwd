@@ -13,8 +13,11 @@ PASSWD_FILE = "/etc/tacacs+/passwd"
 app = os.path.basename(sys.argv[0])
 
 
-# get_enc_passwd - get encrypted password
 def get_enc_passwd():
+    """
+    get_enc_passwd - get encrypted password
+    """
+
     passwd = getpass.getpass('Enter new password: ')
     verify = getpass.getpass('Retype new password: ')
     if passwd != verify:
@@ -37,8 +40,11 @@ def get_enc_passwd():
     return enc_passwd
 
 
-# tac_passwd - set new password
 def tac_passwd():
+    """
+    tac_passwd - set new password
+    """
+
     if len(sys.argv) != 2:
         sys.stderr.write("Usage: {} <user>\n".format(app))
         return 2
@@ -75,8 +81,11 @@ def tac_passwd():
     return 0
 
 
-# tac_adduser - add new user
 def tac_adduser():
+    """
+    tac_adduser - add new user
+    """
+
     if len(sys.argv) != 2:
         sys.stderr.write("Usage: {} <user>\n".format(app))
         return 2
@@ -113,8 +122,11 @@ def tac_adduser():
     return 0
 
 
-# tac_deluser - delete user
 def tac_deluser():
+    """
+    tac_deluser - delete user
+    """
+
     if len(sys.argv) != 2:
         sys.stderr.write("Usage: {} <user>\n".format(app))
         return 2

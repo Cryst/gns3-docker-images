@@ -2,7 +2,7 @@
 
 FROM ehlers/ipterm-base
 ADD ManageEngine_MibBrowser_FreeTool_64bit.tar.gz /opt/MibBrowser/
-RUN set -ex \
+RUN set -e -x \
 #
 # install snmp cli tools
 #
@@ -22,14 +22,14 @@ RUN set -ex \
 #
 # customize jwm menu
 #
-    && /bin/echo -e '\
+    && printf '\
 ?package(local.mibbrowser):\\\n\
  needs="x11"\\\n\
  section="Applications"\\\n\
  title="MIB Browser"\\\n\
- command="MibBrowser"' \
+ command="MibBrowser"\n' \
         > /etc/menu/qtmib \
-    && echo "postrun="\""sed -i '/^    </ d' debian-menu"\" >> /etc/menu-methods/jwm \
+    && echo "postrun=\"sed -i '/^    </ d' debian-menu\"" >> /etc/menu-methods/jwm \
     && sed -i 's/\(Desktops width\)="[0-9]*"/\1="2"/' /etc/jwm/system.jwmrc \
     && sed -i 's/xterm/x-terminal-emulator/g' /etc/jwm/system.jwmrc \
     && update-menus \
@@ -37,16 +37,16 @@ RUN set -ex \
 # set lxterminal defaults
 #
     && mkdir -p /root/.config/lxterminal \
-    && /bin/echo -e '\
+    && printf '\
 [general]\n\
 scrollback=1000\n\
-fgcolor=#ffffff' \
+fgcolor=#ffffff\n' \
         > /root/.config/lxterminal/lxterminal.conf \
 #
 # MibBrowser start script
 #
-    && /bin/echo -e '\
-\x23!/bin/sh\n\
+    && printf '\
+\043!/bin/sh\n\
 \n\
 MB_HOME=/opt/MibBrowser\n\
 JAVA_HOME=$MB_HOME/jre\n\
@@ -55,32 +55,32 @@ export JAVA_HOME\n\
 cd\n\
 mkdir -p MibBrowser\n\
 cd MibBrowser\n\
-[ -e Templates ] || ln -s $MB_HOME/Templates .\n\
-[ -e conf ] || cp -a $MB_HOME/conf .\n\
-[ -e help ] || ln -s $MB_HOME/help .\n\
-[ -e mibs ] || ln -s $MB_HOME/mibs .\n\
+[ -e Templates ] || ln -s "$MB_HOME/Templates" .\n\
+[ -e conf ] || cp -a "$MB_HOME/conf" .\n\
+[ -e help ] || ln -s "$MB_HOME/help" .\n\
+[ -e mibs ] || ln -s "$MB_HOME/mibs" .\n\
 [ -e std_mibs ] || ln -s /var/lib/snmp/mibs std_mibs\n\
 \n\
 CLASSPATH=$MB_HOME/classes:$MB_HOME/conf:$MB_HOME/MibBrowser:$MB_HOME/jars/ApiUtils.jar:$MB_HOME/jars/AdventNetSnmp.jar:$MB_HOME/jars/AdventNetLogging.jar:$MB_HOME/jars/AdventNetCCLXMLParser.jar:$MB_HOME/jars/AdventNetUtils.jar:$MB_HOME/jars/AdventNetCCLUtils.jar:$MB_HOME/jars/AdventNetSnmpUtilitiesSplash.jar:$MB_HOME/jars/MibBrowser.jar:$MB_HOME:$MB_HOME/jars/JimiProClasses.zip:$MB_HOME/jars/AdventNetNPrevalent.jar:$MB_HOME/jars/AdventNetUI.jar:$MB_HOME/jars/Mail.jar:$MB_HOME/jars/activation.jar:$MB_HOME/jars/AdventNetScript.jar:$MB_HOME/jars/jython.jar:$MB_HOME/jars/log4j-1.2.16.jar:$MB_HOME/jars/smslib-3.5.3.jar\n\
 \n\
 export CLASSPATH\n\
 \n\
-$JAVA_HOME/bin/java -mx200M MibBrowserApplication -h localhost -p 161 -v v1 -c public -m "$MB_HOME/mibs/RFC1213-MIB $MB_HOME/mibs/IF-MIB" -t 5 -r 0' \
+"$JAVA_HOME/bin/java" -mx200M MibBrowserApplication -h localhost -p 161 -v v1 -c public -m "$MB_HOME/mibs/RFC1213-MIB $MB_HOME/mibs/IF-MIB" -t 5 -r 0\n' \
         > /usr/local/bin/MibBrowser && chmod +x /usr/local/bin/MibBrowser \
 #
 # startup script
 #
-    && /bin/echo -e '\
-\x23!/bin/sh\n\
+    && printf '\
+\043!/bin/sh\n\
 [ $$ -eq 1 ] && exec dumb-init -- "$0" "$@"\n\
 \n\
-\x23 workaround: sometimes the first start of an X application fails\n\
+\043 workaround: sometimes the first start of an X application fails\n\
 lxterminal -e true 2> /dev/null\n\
 \n\
 cd\n\
 export SHELL=/bin/bash\n\
 MibBrowser &\n\
-jwm' \
+jwm\n' \
         > /etc/init.sh && chmod +x /etc/init.sh
 
 VOLUME [ "/root" ]

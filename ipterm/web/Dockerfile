@@ -2,7 +2,7 @@
 
 FROM ehlers/ipterm-base
 
-RUN set -ex \
+RUN set -e -x \
 #
 # install web tools
 #
@@ -14,26 +14,26 @@ RUN set -ex \
 #
 # firefox start script
 #
-    && /bin/echo -e '\
-\x23!/bin/sh\n\
+    && printf '\
+\043!/bin/sh\n\
 \n\
-\x23 use home page on first start\n\
+\043 use home page on first start\n\
 [ -e "$HOME/.mozilla" ] || start_url="about:home"\n\
 \n\
-\x23 start firefox\n\
-firefox $start_url' \
+\043 start firefox\n\
+firefox $start_url\n' \
         > /usr/local/bin/start-firefox && chmod +x /usr/local/bin/start-firefox \
 #
 # customize jwm menu
 #
-    && /bin/echo -e '\
+    && printf '\
 ?package(firefox-esr):\\\n\
  needs="x11"\\\n\
  section="Applications"\\\n\
  title="Mozilla Firefox"\\\n\
- command="start-firefox"' \
+ command="start-firefox"\n' \
         > /etc/menu/firefox \
-    && echo "postrun="\""sed -i '/^    </ d' debian-menu"\" >> /etc/menu-methods/jwm \
+    && echo "postrun=\"sed -i '/^    </ d' debian-menu\"" >> /etc/menu-methods/jwm \
     && sed -i 's/\(Desktops width\)="[0-9]*"/\1="2"/' /etc/jwm/system.jwmrc \
     && sed -i 's/xterm/x-terminal-emulator/g' /etc/jwm/system.jwmrc \
     && update-menus \
@@ -41,25 +41,25 @@ firefox $start_url' \
 # set lxterminal defaults
 #
     && mkdir -p /root/.config/lxterminal \
-    && /bin/echo -e '\
+    && printf '\
 [general]\n\
 scrollback=1000\n\
-fgcolor=#ffffff' \
+fgcolor=#ffffff\n' \
         > /root/.config/lxterminal/lxterminal.conf \
 #
 # startup script
 #
-    && /bin/echo -e '\
-\x23!/bin/sh\n\
+    && printf '\
+\043!/bin/sh\n\
 [ $$ -eq 1 ] && exec dumb-init -- "$0" "$@"\n\
 \n\
-\x23 workaround: sometimes the first start of an X application fails\n\
+\043 workaround: sometimes the first start of an X application fails\n\
 lxterminal -e true 2> /dev/null\n\
 \n\
 cd\n\
 export SHELL=/bin/bash\n\
 start-firefox &\n\
-jwm' \
+jwm\n' \
         > /etc/init.sh && chmod +x /etc/init.sh
 
 VOLUME [ "/root" ]

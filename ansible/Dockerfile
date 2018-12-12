@@ -1,7 +1,7 @@
 # docker image with Ansible and basic networking tools
 FROM ehlers/ipterm-base
 
-RUN set -ex \
+RUN set -e -x \
 #
 # install ansible
 #
@@ -23,17 +23,17 @@ RUN set -ex \
 #
 # startup script
 #
-    && /bin/echo -e '\
-\x23!/bin/sh\n\
+    && printf '\
+\043!/bin/sh\n\
 \n\
-\x23 symlink /etc/hosts to persistent directory\n\
+\043 symlink /etc/hosts to persistent directory\n\
 mount | fgrep -q "on /etc/hosts "\n\
 if [ $? -ne 0 ]; then\n\
 	[ -s /etc/ansible/etc_hosts ] || cp -p /etc/hosts /etc/ansible/etc_hosts\n\
 	ln -sf /etc/ansible/etc_hosts /etc/hosts\n\
 fi\n\
 \n\
-cd; exec bash -i' \
+cd; exec bash -i\n' \
         > /etc/init.sh && chmod +x /etc/init.sh
 
 VOLUME [ "/root", "/etc/ansible" ]

@@ -2,7 +2,7 @@
 
 FROM ehlers/webterm
 
-RUN set -ex \
+RUN set -e -x \
 #
 # install Java and Java Web Start
 #
@@ -15,27 +15,27 @@ RUN set -ex \
 #
 # customize jwm menu
 #
-    && /bin/echo -e '\
+    && printf '\
 ?package(icedtea-netx):\\\n\
  needs="x11"\\\n\
  section="Applications"\\\n\
  title="ASDM Launcher"\\\n\
- command="start-asdm"' \
+ command="start-asdm"\n' \
         > /etc/menu/asdm \
     && update-menus \
 #
 # ASDM Launcher
 #
-    && /bin/echo -e '\
-\x23!/bin/sh\n\
+    && printf '\
+\043!/bin/sh\n\
 \n\
-asa_ip=`yad --entry --title="ASDM Launcher" \\\n\
-            --text="\\n  Connects to ASAv by ASDM    \\n" \\\n\
-            --entry-text="IP"`\n\
+asa_ip=$(yad --entry --title="ASDM Launcher" \\\n\
+             --text="\\n  Connects to ASAv by ASDM    \\n" \\\n\
+             --entry-text="IP")\n\
 [ $? -ne 0 ] && exit 1\n\
-[ -z "$asa_ip" -o "$asa_ip" = "IP" ] && exit 1\n\
+[ -z "$asa_ip" ] || [ "$asa_ip" = "IP" ] && exit 1\n\
 \n\
-javaws https://$asa_ip/admin/public/asdm.jnlp < /dev/null' \
+javaws "https://$asa_ip/admin/public/asdm.jnlp" < /dev/null\n' \
         > /usr/local/bin/start-asdm \
     && chmod +x /usr/local/bin/start-asdm \
 #

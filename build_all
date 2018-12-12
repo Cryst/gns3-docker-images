@@ -7,7 +7,7 @@ set -e
 
 DOCKER_BUILD_OPTIONS="--force-rm"
 
-last_image=`docker images -q | head -n1`
+last_image=$(docker images -q | head -n1)
 
 echo
 echo "*** ipterm"
@@ -18,22 +18,22 @@ docker build $DOCKER_BUILD_OPTIONS -t ehlers/webterm ipterm/web
 docker build $DOCKER_BUILD_OPTIONS -t ehlers/web_java ipterm/java
 
 for dockerfile in */Dockerfile; do
-	dir=`dirname $dockerfile`
-	tag=`echo $dir | sed 's/\+/\//'`
+	dir=$(dirname "$dockerfile")
+	tag=$(echo "$dir" | sed 's/\+/\//')
 	echo
 	echo "*** $tag"
 	echo
-	docker build $DOCKER_BUILD_OPTIONS -t $tag $dir
+	docker build $DOCKER_BUILD_OPTIONS -t "$tag" "$dir"
 done
 
 [ -n "$last_image" ] && filter="--filter since=$last_image" || filter=""
-new_images=`docker images $filter --format '{{.Repository}}:{{.Tag}}' | sort`
+new_images=$(docker images $filter --format '{{.Repository}}:{{.Tag}}' | sort)
 
-dangling=`docker images -f "dangling=true" -q`
+dangling=$(docker images -f "dangling=true" -q)
 if [ -n "$dangling" ]; then
 	echo
 	echo "*** Removing dangling images..."
-	docker rmi $dangling
+	echo "$dangling" | xargs docker rmi
 fi
 
 echo

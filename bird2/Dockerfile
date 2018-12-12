@@ -2,17 +2,17 @@
 
 FROM debian:stretch-slim
 
-RUN set -ex \
+RUN set -e -x \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
 #
 # download, compile and install bird v2
 #
     && apt-get -y --no-install-recommends install libreadline7 \
-    && dpkg-query -f '${binary:Package}\n' -W | sort > base_packages \
+    && dpkg-query -f '${binary:Package}\n' -W | sort > /tmp/base_packages \
     && apt-get -y --no-install-recommends install \
         curl gcc libc6-dev make bison flex libncurses-dev libreadline-dev \
-    && latest=`curl -s -S ftp://bird.network.cz/pub/bird/ | sed -n 's/^.*LATEST-IS-\(2.*\)/\1/p'` \
+    && latest=$(curl -s -S ftp://bird.network.cz/pub/bird/ | sed -n 's/^.*LATEST-IS-\(2.*\)/\1/p') \
     && if [ -z "$latest" ]; then echo "Latest BIRD package not found" >&2; exit 1; fi \
     && curl -s -S "ftp://bird.network.cz/pub/bird/bird-$latest.tar.gz" | tar xz \
     && cd bird* \
@@ -22,10 +22,9 @@ RUN set -ex \
     && make install \
     && cd .. \
     && rm -rf bird* \
-    && dpkg-query -f '${binary:Package}\n' -W | sort > packages \
-    && apt-get -y purge \
-        `comm -13 base_packages packages` \
-    && rm -f base_packages packages \
+    && dpkg-query -f '${binary:Package}\n' -W | sort > /tmp/packages \
+    && comm -13 /tmp/base_packages /tmp/packages | xargs apt-get -y purge \
+    && rm -f /tmp/base_packages /tmp/packages \
 #
 # install remaining tools
 #
@@ -36,15 +35,15 @@ RUN set -ex \
 #
 # setup BIRD
 #
-    && /bin/echo -e '\
-\x23!/bin/sh\n\
+    && printf '\
+\043!/bin/sh\n\
 \n\
 bird\n\
 cd /etc/bird\n\
-exec bash -i' \
+exec bash -i\n' \
         > /etc/init.sh && chmod +x /etc/init.sh \
-    && /bin/echo -e '\
-\x23!/usr/bin/awk -f\n\
+    && printf '\
+\043!/usr/bin/awk -f\n\
 \n\
 BEGIN {\n\
 	if (ARGC < 3 || ARGC > 4) {\n\
@@ -64,7 +63,7 @@ BEGIN {\n\
 		for (i=4; i>0 && ++ip[i] >= 256; i--)\n\
 			ip[i] = 0\n\
 	}\n\
-}' \
+}\n' \
         > /usr/local/bin/create_routes && chmod +x /usr/local/bin/create_routes
 
 VOLUME [ "/etc/bird" ]
