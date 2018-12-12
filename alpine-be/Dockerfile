@@ -24,6 +24,7 @@ RUN set -e -x -o pipefail \
 [ $$ -eq 1 ] && exec dumb-init -r 15:1 -- "$0" "$@"\n\
 \n\
 nodnsd\n\
+[ -f /root/init.sh ] && [ -x /root/init.sh ] && /root/init.sh\n\
 \n\
 if [ $# -gt 0 ]; then\n\
 	exec "$@"\n\
