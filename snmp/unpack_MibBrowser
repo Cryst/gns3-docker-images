@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker run --rm --tty --volume `pwd`:/extern debian:stretch-slim sh /extern/unpack_MibBrowser.docker
+docker run --rm --tty --volume "$(pwd):/extern" debian:stretch-slim sh /extern/unpack_MibBrowser.docker
