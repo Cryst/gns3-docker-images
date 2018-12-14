@@ -27,10 +27,14 @@ if not ($fromhost-ip startswith "127.") then {\n\
     && printf '\
 \043!/bin/sh\n\
 \n\
-getopt -q -s sh "hHI:iuCd:Vartw:c:f:nq" "$@" | grep -q -- " --$"\n\
-if [ $? -eq 0 ]; then\n\
+\043 skip options\n\
+while getopts ":hHI:iuCd:Vartw:c:f:nq" _; do :; done\n\
+\n\
+if [ $OPTIND -gt $# ]; then\n\
+	\043 no arguments, view default logfiles\n\
 	lnav "$@" /var/log/syslog /var/log/network\n\
 else\n\
+	\043 logfiles in command line\n\
 	lnav "$@"\n\
 fi\n' \
         > /usr/local/bin/logview && chmod +x /usr/local/bin/logview \
