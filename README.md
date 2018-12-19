@@ -5,6 +5,10 @@ that work with GNS3 V1.5, see https://github.com/GNS3
 
 The images are available from Docker Hub <https://hub.docker.com/u/ehlers/>.
 
-If you don't want to trigger the builds by a GitHub push,
-you can use the script `hub_build` to start the builds.
-To use it for your Docker Hub account, modify USERNAME in hub_build.
+After building the images locally, they can be pushed to DockerHub.
+Only modified images are pushed. Login with `docker login` before.
+
+```
+docker login
+./hub_push
+```

@@ -1,0 +1,63 @@
+#!/bin/sh
+#
+# push repositories to DockerHub
+#
+
+set -e
+
+HUB_USER=$(docker info 2>/dev/null | sed -n 's/^Username:[[:space:]]*//p')
+if [ -z "$HUB_USER" ]; then
+	echo 'Use "docker login" to login into DockerHub.' >&2
+	exit 1
+fi
+
+hub_update() {
+	local_repo=$1
+	if [ "${local_repo#*/}" = "${local_repo}" ]; then
+		hub_repo=$HUB_USER/$local_repo
+	else
+		hub_repo=$local_repo
+	fi
+
+	# get date of latest local build
+	local_update=$(docker inspect "$local_repo" 2>/dev/null | jq -r '.[].Created')
+	[ -z "$local_update" ] && return
+
+	# get date of latest dockerhub build
+	hub_update=$(curl -s "https://hub.docker.com/v2/repositories/$hub_repo/" | jq -r '.last_updated // ""')
+
+	# push repository, if local is newer
+	if [ "$local_update" \> "$hub_update" ]; then
+		echo
+		echo "*** $hub_repo"
+		echo
+		[ "$local_repo#" = "$hub_repo" ] || \
+			docker tag "$local_repo" "$hub_repo"
+		docker push "$hub_repo"
+		[ "$local_repo#" = "$hub_repo" ] || \
+			docker rmi "$hub_repo" > /dev/null
+	fi
+}
+
+if [ $# -gt 0 ]; then
+	# push repos given on command line
+	for repo in "$@"; do
+		hub_update "$repo"
+	done
+else
+	# push (almost) all repos
+	hub_update ehlers/ipterm-base
+	hub_update ehlers/ipterm
+	hub_update ehlers/webterm
+	hub_update ehlers/web_java
+	hub_update alpine-be
+	hub_update ansible
+	hub_update bird2
+	hub_update ethloop
+	hub_update fileserv
+	hub_update napalm
+	hub_update ostinato
+	hub_update scapy
+	hub_update syslog
+	hub_update tacacs
+fi
