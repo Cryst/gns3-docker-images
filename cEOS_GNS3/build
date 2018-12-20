@@ -10,7 +10,7 @@ version="$1"
 
 case $version in
 	4.20.*)	build_dir=4.20 ;;
-	*)	build_dir=. ;;
+	*)	build_dir=4.21+ ;;
 esac
 
 docker rmi ceosimage:GNS3 > /dev/null 2>&1
