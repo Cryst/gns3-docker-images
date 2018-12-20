@@ -2,6 +2,8 @@
 #
 # push repositories to DockerHub
 #
+# Requires curl and jq <https://stedolan.github.io/jq/>
+#
 
 set -e
 
@@ -19,15 +21,20 @@ hub_update() {
 		hub_repo=$local_repo
 	fi
 
-	# get date of latest local build
-	local_update=$(docker inspect "$local_repo" 2>/dev/null | jq -r '.[].Created')
-	[ -z "$local_update" ] && return
+	# get local digest
+	local_digest=$(docker inspect "$local_repo" --format '{{.Id}}' 2>/dev/null)
+	[ -z "$local_digest" ] && return
 
-	# get date of latest dockerhub build
-	hub_update=$(curl -s "https://hub.docker.com/v2/repositories/$hub_repo/" | jq -r '.last_updated // ""')
+	# get remote digest
+	token=$(curl --silent "https://auth.docker.io/token?scope=repository:${hub_repo}:pull&service=registry.docker.io" | jq -r .token)
+	hub_digest=$(curl --silent \
+		--header 'Accept: application/vnd.docker.distribution.manifest.v2+json' \
+		--header "Authorization: Bearer $token" \
+		"https://registry-1.docker.io/v2/${hub_repo}/manifests/latest" \
+		| jq -r '.config.digest // ""')
 
-	# push repository, if local is newer
-	if [ "$local_update" \> "$hub_update" ]; then
+	# push repository, if digest differs
+	if [ "$local_digest" \!= "$hub_digest" ]; then
 		echo
 		echo "*** $hub_repo"
 		echo
