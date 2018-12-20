@@ -1,0 +1,17 @@
+#!/bin/sh
+# create GNS3 cEOS image from Arista image
+
+if [ $# -ne 1 ]; then
+	echo "usage: $(basename "$0") <cEOS version>" >&2
+	exit 1
+fi
+
+version="$1"
+
+case $version in
+	4.20.*)	build_dir=4.20 ;;
+	*)	build_dir=. ;;
+esac
+
+docker rmi ceosimage:GNS3 > /dev/null 2>&1
+docker build --force-rm --build-arg ceos_version="$version" --tag ceosimage:GNS3 "$build_dir"
