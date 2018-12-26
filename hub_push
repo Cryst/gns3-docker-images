@@ -2,7 +2,7 @@
 #
 # push repositories to DockerHub
 #
-# Requires curl and jq <https://stedolan.github.io/jq/>
+# Requires curl and docker
 #
 
 set -e
@@ -26,12 +26,15 @@ hub_update() {
 	[ -z "$local_digest" ] && return
 
 	# get remote digest
-	token=$(curl --silent "https://auth.docker.io/token?scope=repository:${hub_repo}:pull&service=registry.docker.io" | jq -r .token)
+	token=$(curl --silent "https://auth.docker.io/token?scope=repository:${hub_repo}:pull&service=registry.docker.io" | \
+		tr '\r\n' '  ' | \
+		sed -n 's/^.*"token": *"\([^"]*\)".*/\1/p')
 	hub_digest=$(curl --silent \
 		--header 'Accept: application/vnd.docker.distribution.manifest.v2+json' \
 		--header "Authorization: Bearer $token" \
-		"https://registry-1.docker.io/v2/${hub_repo}/manifests/latest" \
-		| jq -r '.config.digest // ""')
+		"https://registry-1.docker.io/v2/${hub_repo}/manifests/latest" | \
+		tr '\r\n' '  ' | \
+		sed -n 's/^.*"config": *{[^}]*"digest": *"\([^"]*\)".*/\1/p')
 
 	# push repository, if digest differs
 	if [ "$local_digest" \!= "$hub_digest" ]; then
