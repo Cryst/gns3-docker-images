@@ -56,18 +56,8 @@ if [ $# -gt 0 ]; then
 	done
 else
 	# push (almost) all repos
-	hub_update ehlers/ipterm-base
-	hub_update ehlers/ipterm
-	hub_update ehlers/webterm
-	hub_update ehlers/web_java
-	hub_update alpine-be
-	hub_update ansible
-	hub_update bird2
-	hub_update ethloop
-	hub_update fileserv
-	hub_update napalm
-	hub_update ostinato
-	hub_update scapy
-	hub_update syslog
-	hub_update tacacs
+	images=$(sed -e '/^[[:space:]]*$/d' -e '/^[[:space:]]*#/d' hub_images)
+	for repo in $images; do
+		hub_update "$repo"
+	done
 fi
