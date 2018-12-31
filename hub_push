@@ -41,10 +41,10 @@ hub_update() {
 		echo
 		echo "*** $hub_repo"
 		echo
-		[ "$local_repo#" = "$hub_repo" ] || \
+		[ "$local_repo" = "$hub_repo" ] || \
 			docker tag "$local_repo" "$hub_repo"
 		docker push "$hub_repo"
-		[ "$local_repo#" = "$hub_repo" ] || \
+		[ "$local_repo" = "$hub_repo" ] || \
 			docker rmi "$hub_repo" > /dev/null
 	fi
 }
