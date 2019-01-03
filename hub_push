@@ -15,11 +15,7 @@ fi
 
 hub_update() {
 	local_repo=$1
-	if [ "${local_repo#*/}" = "${local_repo}" ]; then
-		hub_repo=$HUB_USER/$local_repo
-	else
-		hub_repo=$local_repo
-	fi
+	hub_repo=$HUB_USER/${local_repo##*/}
 
 	# get local digest
 	local_digest=$(docker inspect "$local_repo" --format '{{.Id}}' 2>/dev/null)
