@@ -5,12 +5,12 @@ FROM ehlers/ipterm-base
 RUN set -e -x \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
-    && url=$(curl -s -S -L https://api.github.com/repos/FRRouting/frr/releases/latest | sed -n 's/^ *"browser_download_url": "\([^"]*\/frr_[0-9.-]*debian9[0-9.+%A-Fa-f]*_amd64.deb\)".*/\1/p') \
+    && url=$(curl -s -S -L 'https://api.github.com/repos/FRRouting/frr/releases?per_page=1' | sed -n 's/^ *"browser_download_url": "\([^"]*\/frr_[0-9.-]*deb\(ian\)\{0,1\}9[u0-9.+%A-Fa-f]*_amd64.deb\)".*/\1/p') \
     && if [ -z "$url" ]; then echo "FRR package for Debian not found" >&2; exit 1; fi \
     && curl -s -S -L -o /tmp/frr.deb "$url" \
     && apt-get -y --no-install-recommends install /tmp/frr.deb \
     && rm /tmp/frr.deb \
-    && ln -s /usr/lib/frr/frr /etc/init.d/frr \
+    && if [ ! -f /etc/init.d/frr ]; then ln -s /usr/lib/frr/frr /etc/init.d/frr; fi \
     && rm -rf /var/lib/apt/lists/* \
 #
 # setup FRR
@@ -19,7 +19,7 @@ RUN set -e -x \
     && printf '\
 \043!/bin/sh\n\
 \n\
-if grep -q -E "^ *[a-z].*= *(yes|true|[1-9])" /etc/frr/daemons; then\n\
+if grep -E "^ *[a-z].*= *(yes|true|[1-9])" /etc/frr/daemons | grep -q -v "^ *vtysh_enable"; then\n\
 	service frr start\n\
 else\n\
 	echo\n\
