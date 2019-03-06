@@ -8,21 +8,19 @@ RUN set -e -x \
     && apt-get -y --no-install-recommends install \
         curl ca-certificates \
 #
-# compile and install mtools (msend & mreceive)
+# install mtools (msend & mreceive)
 #
-    && dpkg-query -f '${binary:Package}\n' -W | sort > /tmp/base_packages \
-    && apt-get -y --no-install-recommends install \
-        gcc libc6-dev make \
-    && curl -s -S -L https://github.com/troglobit/mtools/archive/v2.3.tar.gz | tar xfz - \
-    && cd mtools* \
-    && make \
-    && make install \
-    && mv /usr/local/sbin/mreceive /usr/local/sbin/msend /usr/local/bin/ \
-    && cd .. \
-    && rm -r mtools* \
-    && dpkg-query -f '${binary:Package}\n' -W | sort > /tmp/packages \
-    && comm -13 /tmp/base_packages /tmp/packages | xargs apt-get -y purge \
-    && rm -f /tmp/base_packages /tmp/packages \
+    && mtools=$(curl -s https://git.bernhard-ehlers.de/api/v1/repos/ehlers/mtools/releases) \
+    && url=$(echo "$mtools" | sed -n 's/^.*"msend[^"]*\.bin"[^}]*"browser_download_url": *"\([^"]*\).*/\1/p') \
+    && if [ -z "$url" ]; then echo "msend binary not found" >&2; exit 1; fi \
+    && curl -s -S -L -o /usr/local/bin/msend "$url" \
+    && chown root:root /usr/local/bin/msend \
+    && chmod 755 /usr/local/bin/msend \
+    && url=$(echo "$mtools" | sed -n 's/^.*"mreceive[^"]*\.bin"[^}]*"browser_download_url": *"\([^"]*\).*/\1/p') \
+    && if [ -z "$url" ]; then echo "mreceive binary not found" >&2; exit 1; fi \
+    && curl -s -S -L -o /usr/local/bin/mreceive "$url" \
+    && chown root:root /usr/local/bin/mreceive \
+    && chmod 755 /usr/local/bin/mreceive \
 #
 # install remaining tools
 #
