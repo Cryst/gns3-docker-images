@@ -5,12 +5,10 @@ FROM ehlers/ipterm-base
 RUN set -e -x \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
-    && url=$(curl -s -S -L 'https://api.github.com/repos/FRRouting/frr/releases?per_page=1' | sed -n 's/^ *"browser_download_url": "\([^"]*\/frr_[0-9.-]*deb\(ian\)\{0,1\}9[u0-9.+%A-Fa-f]*_amd64.deb\)".*/\1/p') \
-    && if [ -z "$url" ]; then echo "FRR package for Debian not found" >&2; exit 1; fi \
-    && curl -s -S -L -o /tmp/frr.deb "$url" \
-    && apt-get -y --no-install-recommends install /tmp/frr.deb \
-    && rm /tmp/frr.deb \
-    && if [ ! -f /etc/init.d/frr ]; then ln -s /usr/lib/frr/frr /etc/init.d/frr; fi \
+    && apt-get -y --no-install-recommends install apt-transport-https \
+    && echo "deb [trusted=yes] https://deb.frrouting.org/frr stretch frr-stable" > /etc/apt/sources.list.d/frr.list \
+    && apt-get update \
+    && apt-get -y --no-install-recommends install frr \
     && rm -rf /var/lib/apt/lists/* \
 #
 # setup FRR
