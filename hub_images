@@ -9,6 +9,7 @@ ansible
 bird2
 ethloop
 fileserv
+frr
 napalm
 ostinato
 scapy
