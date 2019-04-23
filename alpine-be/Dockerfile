@@ -8,9 +8,7 @@ RUN set -e -x -o pipefail \
 #
     && apk --no-cache add busybox-extras dumb-init \
     && mkdir -p /usr/local/sbin \
-    && url=$(wget -q -O - https://git.bernhard-ehlers.de/api/v1/repos/ehlers/nodnsd/releases | sed -n 's/^.*"browser_download_url": *"\([^"]*\).*/\1/p') \
-    && if [ -z "$url" ]; then echo "nodnsd package not found" >&2; exit 1; fi \
-    && wget -q -O /usr/local/sbin/nodnsd "$url" \
+    && wget -q -O /usr/local/sbin/nodnsd https://git.bernhard-ehlers.de/ehlers/nodnsd/releases/download/v0.1/nodnsd_linux_amd64.bin \
     && chmod 755 /usr/local/sbin/nodnsd \
 #
 # add gns3 user

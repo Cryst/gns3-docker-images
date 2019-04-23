@@ -10,17 +10,10 @@ RUN set -e -x \
 #
 # install mtools (msend & mreceive)
 #
-    && mtools=$(curl -s https://git.bernhard-ehlers.de/api/v1/repos/ehlers/mtools/releases) \
-    && url=$(echo "$mtools" | sed -n 's/^.*"msend[^"]*\.bin"[^}]*"browser_download_url": *"\([^"]*\).*/\1/p') \
-    && if [ -z "$url" ]; then echo "msend binary not found" >&2; exit 1; fi \
-    && curl -s -S -L -o /usr/local/bin/msend "$url" \
-    && chown root:root /usr/local/bin/msend \
-    && chmod 755 /usr/local/bin/msend \
-    && url=$(echo "$mtools" | sed -n 's/^.*"mreceive[^"]*\.bin"[^}]*"browser_download_url": *"\([^"]*\).*/\1/p') \
-    && if [ -z "$url" ]; then echo "mreceive binary not found" >&2; exit 1; fi \
-    && curl -s -S -L -o /usr/local/bin/mreceive "$url" \
-    && chown root:root /usr/local/bin/mreceive \
-    && chmod 755 /usr/local/bin/mreceive \
+    && curl -f -s -S -L -o /usr/local/bin/msend https://git.bernhard-ehlers.de/ehlers/mtools/releases/download/v2.3/msend_linux_amd64.bin \
+    && curl -f -s -S -L -o /usr/local/bin/mreceive https://git.bernhard-ehlers.de/ehlers/mtools/releases/download/v2.3/mreceive_linux_amd64.bin \
+    && chown root:root /usr/local/bin/msend /usr/local/bin/mreceive \
+    && chmod 755 /usr/local/bin/msend /usr/local/bin/mreceive \
 #
 # install remaining tools
 #
