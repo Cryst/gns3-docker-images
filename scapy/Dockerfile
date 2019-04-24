@@ -6,11 +6,11 @@ RUN set -e -x \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get -y --no-install-recommends install \
-       python python-cryptography tcpdump \
-       python-pip python-setuptools python-wheel \
-    && pip install --quiet --no-cache-dir scapy \
+       python3 python3-cryptography netbase tcpdump \
+       python3-pip python3-setuptools python3-wheel \
+    && pip3 install --quiet --no-cache-dir scapy \
     && rm -rf /root/.cache \
-    && apt-get -y --purge autoremove python-pip python-wheel \
+    && apt-get -y --purge autoremove python3-pip python3-wheel \
     && rm -rf /var/lib/apt/lists/*
 
 VOLUME [ "/root" ]
