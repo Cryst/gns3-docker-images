@@ -6,18 +6,18 @@ RUN set -e -x \
 # install ansible
 #
     && export DEBIAN_FRONTEND=noninteractive \
-    && echo "deb [trusted=yes] http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main" > /etc/apt/sources.list.d/ansible.list \
+    && echo "deb http://deb.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/backports.list \
     && apt-get update \
-    && apt-get -y --no-install-recommends install \
-       ansible \
+    && apt-get -y --no-install-recommends install -t stretch-backports \
+       ansible sshpass \
 #
 # install dependencies for junos network modules
 #
     && apt-get -y --no-install-recommends install \
-       python-lxml python-netaddr python-scp python-serial \
+       python-ncclient python-junos-eznc \
     && apt-get -y --no-install-recommends install \
        python-pip python-wheel \
-    && pip install --no-cache-dir ncclient jxmlease junos-eznc \
+    && pip install --no-cache-dir jxmlease \
     && apt-get autoremove -y --purge python-pip python-wheel \
     && rm -rf /var/lib/apt/lists/* \
 #
