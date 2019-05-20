@@ -1,31 +1,51 @@
 FROM alpine
 
 #
-# install iouyap, tini and (frozen) ioutools
+# install iouyap, tini and development tools to run PyInstaller
 #
 RUN set -e -x -o pipefail \
     && printf '\0\0\0\0' > /etc/hostid \
     && apk --no-cache add iouyap tini \
-    && apk --no-cache add --virtual build-deps python3-dev gcc musl-dev wget ca-certificates \
-    && pip3 install --quiet --no-cache-dir cx_Freeze==5.0.2 \
-# install and freeze IOUtools
+    && apk --no-cache add --virtual build-deps python3-dev zlib-dev gcc musl-dev wget ca-certificates \
     && cd /tmp \
+#
+# better ldd, show correct path for ld-musl library
+#
+    && rm /usr/bin/ldd \
+    && printf '\
+\043!/bin/sh\n\
+exec /lib/ld-musl-* --list -- "$@"\n' \
+        > /usr/bin/ldd \
+    && chmod +x /usr/bin/ldd \
+#
+# install PyInstaller
+# based on https://github.com/six8/pyinstaller-alpine
+#
+    && tag=$(wget -q -O - https://api.github.com/repos/pyinstaller/pyinstaller/releases/latest | sed -n 's/^ *"tag_name": "\([^"]*\).*/\1/p') \
+    && wget -q -O - https://github.com/pyinstaller/pyinstaller/archive/${tag}.tar.gz | tar xz \
+    && cd pyinstaller*/bootloader \
+    && CFLAGS="-Wno-stringop-overflow" python3 ./waf configure --no-lsb all \
+    && cd .. \
+    && pip3 install --no-cache-dir . \
+    && cd .. \
+    && rm -rf pyinstaller* \
+#
+# freeze iou_import, iou_export
+#
     && wget -q https://git.bernhard-ehlers.de/ehlers/IOUtools/raw/branch/master/iou_import \
     && wget -q https://git.bernhard-ehlers.de/ehlers/IOUtools/raw/branch/master/iou_export \
-    && printf '\
-from cx_Freeze import setup, Executable\n\
-setup (\n\
-    options = { "build_exe": { "build_exe": "/usr/local/bin", "silent": True, "zip_exclude_packages": None, "zip_include_packages": "*" } },\n\
-    executables = [ Executable("iou_import"), Executable("iou_export") ]\n\
-)\n' \
-        > setup.py \
-    && ln -s "$(which ldd)" ldd \
-    && python3 setup.py build \
-    && rm /usr/local/bin/ldd \
-    && rm iou_export iou_import setup.py ldd \
-    && cd - \
+    && pyinstaller iou_import \
+    && pyinstaller iou_export \
+    && mkdir -p /usr/local/lib/IOUtools \
+    && cp -a dist/iou_import/* dist/iou_export/* /usr/local/lib/IOUtools/ \
+    && rm /usr/local/lib/IOUtools/ld-musl-* \
+    && ln -s /usr/local/lib/IOUtools/iou_* /usr/local/bin/ \
+    && rm -rf iou_import iou_export *.spec build dist \
+#
 # cleanup
-    && pip3 uninstall --quiet --yes cx_Freeze \
+#
+    && pip3 uninstall --quiet --yes PyInstaller altgraph future macholib pefile \
+    && rm -rf /usr/lib/python3*/site-packages/PyInstaller \
     && rm -rf /root/.cache \
     && apk del build-deps
 
