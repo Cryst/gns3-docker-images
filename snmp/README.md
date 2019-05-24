@@ -15,10 +15,11 @@ Before ipterm-base has to be build.
 
 Then you need to download the Linux 64-bit version of the
 Free SNMP MIB Browser from the URL above and store it in this
-directory. Afterwards unpack it with `sh unpack_MibBrowser`.
+directory.
 
 Now you can build it with:
 
 ```
 docker build -t snmp .
+docker image prune
 ```

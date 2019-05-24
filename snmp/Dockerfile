@@ -1,7 +1,18 @@
 # docker image with snmp and basic networking tools
 
+# Unpacking ManageEngine_MibBrowser_FreeTool_64bit.bin
 FROM ehlers/ipterm-base
-ADD ManageEngine_MibBrowser_FreeTool_64bit.tar.gz /opt/MibBrowser/
+
+COPY ManageEngine_MibBrowser_FreeTool_64bit.bin /tmp/
+
+RUN set -e -x \
+    && chmod +x /tmp/ManageEngine_MibBrowser_FreeTool_64bit.bin \
+    && /tmp/ManageEngine_MibBrowser_FreeTool_64bit.bin -silent
+
+
+# Main image
+FROM ehlers/ipterm-base
+COPY --from=0 /root/ManageEngine/ManageEngine_Free_Tools/MibBrowser_Free_Tool /opt/MibBrowser
 RUN set -e -x \
 #
 # install snmp cli tools
