@@ -1,0 +1,66 @@
+#!/bin/sh
+#
+# build docker images in this repository
+#
+# usage: build [--no-cache] [image ...]
+
+set -e
+
+DOCKER_BUILD_OPTIONS="--force-rm"
+
+if [ "$1" = "-h" ] || [ "$1" = "-?" ] || [ "$1" = "--help" ]; then
+	echo "usage: build [--no-cache] [image ...]" >&2
+	exit 1
+fi
+
+docker_build_image() {
+	path=$1
+	echo
+	echo "*** $path"
+	echo
+	if [ "$path" = "ipterm" ]; then
+		docker build $DOCKER_BUILD_OPTIONS -t ehlers/ipterm-base ipterm/base
+		docker build $DOCKER_BUILD_OPTIONS -t ehlers/ipterm ipterm/cli
+		docker build $DOCKER_BUILD_OPTIONS -t ehlers/webterm ipterm/web
+		docker build $DOCKER_BUILD_OPTIONS -t ehlers/web_java ipterm/java
+	elif [ -f "$path/Dockerfile" ]; then
+		tag=$(echo "$path" | sed 's/\+/\//')
+		docker build $DOCKER_BUILD_OPTIONS -t "$tag" "$path"
+	fi
+}
+
+if [ "$1" = "--no-cache" ]; then
+	DOCKER_BUILD_OPTIONS="${DOCKER_BUILD_OPTIONS} --no-cache"
+	shift
+fi
+
+last_image=$(docker images -q | head -n1)
+
+if [ $# -ge 1 ]; then
+	for image do
+		docker_build_image "$image"
+	done
+else
+	docker_build_image ipterm
+	for dockerfile in */Dockerfile; do
+		docker_build_image "$(dirname "$dockerfile")"
+	done
+fi
+
+[ -n "$last_image" ] && filter="--filter since=$last_image" || filter=""
+new_images=$(docker images $filter --format '{{.Repository}}:{{.Tag}}' | sort)
+
+dangling=$(docker images -f "dangling=true" -q)
+if [ -n "$dangling" ]; then
+	echo
+	echo "*** Removing dangling images..."
+	echo "$dangling" | xargs docker rmi
+fi
+
+echo
+echo "*** New images:"
+if [ -n "$new_images" ]; then
+	echo "$new_images"
+else
+	echo '--- None ---'
+fi
