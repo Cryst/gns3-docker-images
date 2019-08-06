@@ -4,13 +4,20 @@ FROM ehlers/webterm
 
 RUN set -e -x \
 #
-# install Java and Java Web Start
+# install Java v8 and Java Web Start
 #
     && export DEBIAN_FRONTEND=noninteractive \
+    && printf '\
+deb http://deb.debian.org/debian stretch main\n\
+deb http://security.debian.org/debian-security stretch/updates main\n' \
+        > /etc/apt/sources.list.d/stretch.list \
     && apt-get update \
     && mkdir -p /usr/share/man/man1 \
     && apt-get -y --no-install-recommends install \
-        icedtea-netx fonts-dejavu-extra yad \
+        icedtea-netx/stretch openjdk-8-jre/stretch java-common/stretch \
+        fonts-dejavu-extra yad \
+    && apt-mark hold icedtea-netx openjdk-8-jre java-common \
+    && rm /etc/apt/sources.list.d/stretch.list \
     && rm -rf /var/lib/apt/lists/* \
 #
 # customize jwm menu

@@ -6,7 +6,7 @@ RUN set -e -x \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get -y --no-install-recommends install apt-transport-https \
-    && echo "deb [trusted=yes] https://deb.frrouting.org/frr stretch frr-stable" > /etc/apt/sources.list.d/frr.list \
+    && echo "deb [trusted=yes] https://deb.frrouting.org/frr buster frr-stable" > /etc/apt/sources.list.d/frr.list \
     && apt-get update \
     && apt-get -y --no-install-recommends install frr less \
     && rm -rf /var/lib/apt/lists/* \

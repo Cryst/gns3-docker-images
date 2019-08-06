@@ -1,6 +1,6 @@
 # BIRD routing daemon, see http://bird.network.cz
 
-FROM debian:stretch-slim
+FROM debian:buster-slim
 
 RUN set -e -x \
     && export DEBIAN_FRONTEND=noninteractive \
@@ -18,7 +18,7 @@ RUN set -e -x \
     && cd bird* \
     && ./configure --sysconfdir='/etc/bird'\
     && make \
-    && strip -s bird* \
+    && strip -s bird birdc birdcl \
     && make install \
     && cd .. \
     && rm -rf bird* \

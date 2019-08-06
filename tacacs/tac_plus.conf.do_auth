@@ -1,0 +1,23 @@
+# My simple tacplus config that never needs to change
+# See https://github.com/jathanism/do_auth
+key = mykey
+
+accounting file = /var/log/tacplus.acct
+
+default authentication = file /etc/tacacs+/passwd
+
+user = DEFAULT {
+	member = doauthaccess
+}
+
+group = doauthaccess {
+	default service = permit
+
+	service = exec {
+		priv-lvl = 15
+		idletime = 10
+	}
+
+	enable = file /etc/tacacs+/passwd
+	after authorization "do_auth -i '\''$address'\'' -u '\''$user'\'' -d '\''$name'\'' -l /var/log/do_auth.log -f /etc/tacacs+/do_auth.ini"
+}

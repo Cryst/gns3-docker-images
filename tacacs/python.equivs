@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# Python package, that just depends on Python3, no Python2 anymore.
+#
+# Create with docker:
+# docker run --rm --tty --volume "$(pwd):/build" debian sh -c "cd; sh /build/python.equivs"
+
+apt-get update
+apt-get -y install --no-install-recommends equivs
+
+cat > python.control <<'EOF'
+Section: python
+Priority: optional
+Standards-Version: 3.9.2
+
+Package: python
+Version: 3
+Maintainer: Bernhard Ehlers <be@example.com>
+Depends: python3
+Architecture: all
+Links: python3 /usr/bin/python
+Description: interactive high-level object-oriented language (python3 version)
+ Python, the high-level, interactive object oriented language,
+ includes an extensive class library with lots of goodies for
+ network programming, system administration, sounds and graphics.
+ .
+ This package is a dependency package, which depends on Python 3
+EOF
+
+equivs-build python.control
+
+if [ -d /build ]; then
+	chown --reference=/build python*.deb
+	cp -p python*.deb /build/
+fi

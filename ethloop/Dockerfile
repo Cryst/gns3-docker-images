@@ -1,6 +1,6 @@
 # ethloop - virtual RJ45 loopback plug
 
-FROM debian:stretch-slim
+FROM debian:buster-slim
 
 COPY ethloop.c /root/
 

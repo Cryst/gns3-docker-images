@@ -21,7 +21,8 @@ RUN set -e -x \
     && sed -i -e '/^deb / s/$/ non-free/' /etc/apt/sources.list \
     && apt-get update \
     && apt-get -y --no-install-recommends install \
-        snmp snmp-mibs-downloader libxtst6 dillo lxterminal jwm menu leafpad \
+        snmp snmp-mibs-downloader libxtst6 \
+        dillo ca-certificates  lxterminal jwm menu mousepad \
     && rm -rf /var/lib/apt/lists/* \
     && sed -i -e 's/^mibs/#mibs/' /etc/snmp/snmp.conf \
 #
@@ -40,6 +41,13 @@ RUN set -e -x \
  title="MIB Browser"\\\n\
  command="MibBrowser"\n' \
         > /etc/menu/qtmib \
+    && printf '\
+?package(mousepad):\\\n\
+ needs="x11"\\\n\
+ section="Applications/TextEditor"\\\n\
+ title="Mousepad"\\\n\
+ command="mousepad"\n' \
+        > /etc/menu/mousepad \
     && echo "postrun=\"sed -i '/^    </ d' debian-menu\"" >> /etc/menu-methods/jwm \
     && sed -i 's/\(Desktops width\)="[0-9]*"/\1="2"/' /etc/jwm/system.jwmrc \
     && sed -i 's/xterm/x-terminal-emulator/g' /etc/jwm/system.jwmrc \

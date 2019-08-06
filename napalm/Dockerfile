@@ -6,7 +6,8 @@ RUN set -e -x \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get -y --no-install-recommends install \
-       python3 python3-pip python3-cryptography \
+       python3 python3-pip python3-setuptools python3-wheel \
+       python3-cryptography \
     && apt-get -y --no-install-recommends install \
        python3-dev gcc \
     && pip3 install --no-cache-dir napalm \

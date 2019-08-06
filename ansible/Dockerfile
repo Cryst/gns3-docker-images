@@ -6,20 +6,23 @@ RUN set -e -x \
 # install ansible
 #
     && export DEBIAN_FRONTEND=noninteractive \
-    && echo "deb http://deb.debian.org/debian stretch-backports main" > /etc/apt/sources.list.d/backports.list \
     && apt-get update \
-    && apt-get -y --no-install-recommends install -t stretch-backports \
+    && apt-get -y --no-install-recommends install \
        ansible sshpass \
 #
 # install dependencies for junos network modules
 #
     && apt-get -y --no-install-recommends install \
-       python-ncclient python-junos-eznc \
+       python3-ncclient python3-junos-eznc \
     && apt-get -y --no-install-recommends install \
-       python-pip python-wheel \
-    && pip install --no-cache-dir jxmlease \
-    && apt-get autoremove -y --purge python-pip python-wheel \
+       python3-pip python3-wheel \
+    && pip3 install --no-cache-dir jxmlease \
+    && apt-get autoremove -y --purge python3-pip python3-wheel \
     && rm -rf /var/lib/apt/lists/* \
+#
+# some ansible modules expect the python interpreter in /usr/bin/python
+#
+    && ln -s python3 /usr/bin/python \
 #
 # startup script
 #

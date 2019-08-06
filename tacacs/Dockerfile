@@ -1,6 +1,6 @@
-FROM debian:stretch-slim
+FROM debian:buster-slim
 
-COPY tac_passwd /usr/local/sbin/
+COPY do_auth.py tac_plus.conf.do_auth tac_passwd python*.deb /tmp/
 
 RUN set -e -x \
 #
@@ -9,41 +9,23 @@ RUN set -e -x \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get -y --no-install-recommends install \
-        dumb-init tacacs+ \
+        dumb-init /tmp/python*.deb tacacs+ \
         net-tools iproute2 ifupdown isc-dhcp-client inetutils-ping \
         telnet traceroute procps nano vim-tiny \
     && rm -rf /var/lib/apt/lists/* \
 #
+# update do_auth
+#
+    && mv /tmp/do_auth.py /usr/sbin/do_auth \
+    && chmod +x /usr/sbin/do_auth \
+#
 # tac_plus.conf template for do_auth
 #
-    && printf '\
-\043 My simple tacplus config that never needs to change\n\
-\043 See https://github.com/jathanism/do_auth\n\
-key = mykey\n\
-\n\
-accounting file = /var/log/tacplus.acct\n\
-\n\
-default authentication = file /etc/tacacs+/passwd\n\
-\n\
-user = DEFAULT {\n\
-	member = doauthaccess\n\
-}\n\
-\n\
-group = doauthaccess {\n\
-	default service = permit\n\
-\n\
-	service = exec {\n\
-		priv-lvl = 15\n\
-		idletime = 10\n\
-	}\n\
-\n\
-	enable = file /etc/tacacs+/passwd\n\
-	after authorization "do_auth -i '\''$address'\'' -u '\''$user'\'' -d '\''$name'\'' -l /var/log/do_auth.log -f /etc/tacacs+/do_auth.ini"\n\
-}\n' \
-        > /etc/tacacs+/tac_plus.conf.do_auth \
+    && mv /tmp/tac_plus.conf.do_auth /etc/tacacs+/ \
 #
 # tacacs utilities
 #
+    && mv /tmp/tac_passwd /usr/local/sbin/ \
     && chmod 755 /usr/local/sbin/tac_passwd \
     && ln -s tac_passwd /usr/local/sbin/tac_adduser \
     && ln -s tac_passwd /usr/local/sbin/tac_deluser \

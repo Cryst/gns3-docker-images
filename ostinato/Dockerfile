@@ -1,8 +1,8 @@
 # docker image for ostinato
 
-FROM debian:stretch-slim
+FROM debian:buster-slim
 
-COPY ostinato*.deb python-ostinato*.tar.gz libpcap*.deb /tmp/
+COPY libpcap*.deb /tmp/
 
 RUN set -e -x \
 #
@@ -12,12 +12,10 @@ RUN set -e -x \
     && echo 'wireshark-common wireshark-common/install-setuid boolean false' | debconf-set-selections \
     && apt-get update \
     && apt-get -y --no-install-recommends install \
-        dumb-init /tmp/ostinato*.deb /tmp/libpcap*.deb wireshark tshark dillo lxterminal jwm menu leafpad \
+        dumb-init ostinato /tmp/libpcap*.deb wireshark tshark \
+        dillo ca-certificates lxterminal jwm menu mousepad \
         net-tools iproute2 ifupdown isc-dhcp-client inetutils-ping \
         telnet traceroute procps nano vim-tiny \
-    && apt-get -y --no-install-recommends install \
-        python python-pip python-setuptools python-wheel python-protobuf \
-    && pip install --no-cache-dir /tmp/python-ostinato*.tar.gz \
     && rm -rf /var/lib/apt/lists/* \
     && ln -s /usr/bin/dillo /usr/local/bin/firefox \
 #
@@ -37,6 +35,13 @@ RUN set -e -x \
  title="Wireshark"\\\n\
  command="wireshark"\n' \
         > /etc/menu/wireshark \
+    && printf '\
+?package(mousepad):\\\n\
+ needs="x11"\\\n\
+ section="Applications/TextEditor"\\\n\
+ title="Mousepad"\\\n\
+ command="mousepad"\n' \
+        > /etc/menu/mousepad \
     && echo "postrun=\"sed -i '/^    </ d' debian-menu\"" >> /etc/menu-methods/jwm \
     && sed -i 's/\(Desktops width\)="[0-9]*"/\1="2"/' /etc/jwm/system.jwmrc \
     && sed -i 's/xterm/x-terminal-emulator/g' /etc/jwm/system.jwmrc \

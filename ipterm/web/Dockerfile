@@ -9,7 +9,7 @@ RUN set -e -x \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get -y --no-install-recommends install \
-        firefox-esr lxterminal jwm menu leafpad \
+        firefox-esr lxterminal jwm menu mousepad \
     && rm -rf /var/lib/apt/lists/* \
 #
 # firefox start script
@@ -33,6 +33,13 @@ firefox $start_url\n' \
  title="Mozilla Firefox"\\\n\
  command="start-firefox"\n' \
         > /etc/menu/firefox \
+    && printf '\
+?package(mousepad):\\\n\
+ needs="x11"\\\n\
+ section="Applications/TextEditor"\\\n\
+ title="Mousepad"\\\n\
+ command="mousepad"\n' \
+        > /etc/menu/mousepad \
     && echo "postrun=\"sed -i '/^    </ d' debian-menu\"" >> /etc/menu-methods/jwm \
     && sed -i 's/\(Desktops width\)="[0-9]*"/\1="2"/' /etc/jwm/system.jwmrc \
     && sed -i 's/xterm/x-terminal-emulator/g' /etc/jwm/system.jwmrc \

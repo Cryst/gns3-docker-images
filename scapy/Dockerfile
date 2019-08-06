@@ -6,11 +6,10 @@ RUN set -e -x \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get -y --no-install-recommends install \
-       python3 python3-cryptography netbase tcpdump \
-       python3-pip python3-setuptools python3-wheel \
-    && pip3 install --quiet --no-cache-dir scapy \
-    && rm -rf /root/.cache \
-    && apt-get -y --purge autoremove python3-pip python3-wheel \
+       python3-scapy python3-cryptography libwireshark-data \
+    && mkdir -p /usr/local/share/wireshark \
+    && cp -p /usr/share/wireshark/manuf /usr/local/share/wireshark/ \
+    && apt-get -y purge libwireshark-data \
     && rm -rf /var/lib/apt/lists/*
 
 VOLUME [ "/root" ]
