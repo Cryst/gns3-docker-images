@@ -2,7 +2,7 @@
 
 FROM debian:buster-slim
 
-COPY libpcap*.deb /tmp/
+COPY ostinato*.deb /tmp/
 
 RUN set -e -x \
 #
@@ -12,7 +12,7 @@ RUN set -e -x \
     && echo 'wireshark-common wireshark-common/install-setuid boolean false' | debconf-set-selections \
     && apt-get update \
     && apt-get -y --no-install-recommends install \
-        dumb-init ostinato /tmp/libpcap*.deb wireshark tshark \
+        dumb-init /tmp/ostinato*.deb wireshark tshark \
         dillo ca-certificates lxterminal jwm menu mousepad \
         net-tools iproute2 ifupdown isc-dhcp-client inetutils-ping \
         telnet traceroute procps nano vim-tiny \
