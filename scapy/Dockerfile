@@ -10,6 +10,7 @@ RUN set -e -x \
     && mkdir -p /usr/local/share/wireshark \
     && cp -p /usr/share/wireshark/manuf /usr/local/share/wireshark/ \
     && apt-get -y purge libwireshark-data \
+    && ln -s /usr/bin/scapy3 /usr/local/bin/scapy \
     && rm -rf /var/lib/apt/lists/*
 
 VOLUME [ "/root" ]
