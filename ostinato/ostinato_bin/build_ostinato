@@ -30,13 +30,6 @@ ostinato (${DEB_VERSION}) unstable; urgency=low
 EOF
 mv debian/changelog.new debian/changelog
 
-# check for QT5 build
-if grep -q -s -i qt5 .travis.yml; then
-	export QT_SELECT=qt5
-	sed -i 's/libqt4-dev[^)]*)/qtbase5-dev (>= 5.9), qtscript5-dev,\
-               libnl-3-dev, libnl-route-3-dev/' debian/control
-fi
-
 # install build dependencies
 # https://stackoverflow.com/questions/47632014/how-to-install-a-debian-packages-build-depends-and-depends
 apt-get install -y --no-install-recommends build-essential $(awk '
@@ -57,7 +50,6 @@ apt-get install -y --no-install-recommends build-essential $(awk '
   }' debian/control)
 
 # build package
-sed -i '/^CONFIG/ s/ testcase\b//' extra/modeltest/modeltest.pro
 dpkg-buildpackage -us -uc -b
 if [ -d /build ]; then
 	install -m 644 -o "$(stat -c %u /build)" -g "$(stat -c %g /build)" -p ../ostinato_*.deb /build/
