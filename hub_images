@@ -10,6 +10,7 @@ ethloop
 fileserv
 frr
 napalm
+openvswitch
 ostinato
 scapy
 syslog
