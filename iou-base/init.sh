@@ -66,7 +66,13 @@ fi
 # update NVRAM
 if [ -f startup-config ]; then
 	[ -f private-config ] && private="private-config" || private=""
-	iou_import -c "$NVRAM" "$nvram_file" startup-config $private
+	nv_size=0
+	[ -f "$nvram_file" ] && nv_size=$(($(stat -c %s "$nvram_file") / 1024))
+	if [ "$NVRAM" -eq $nv_size ]; then
+		iou_import "$nvram_file" startup-config $private
+	else
+		iou_import -c "$NVRAM" "$nvram_file" startup-config $private
+	fi
 fi
 
 # start IOU
