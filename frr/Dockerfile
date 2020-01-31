@@ -20,6 +20,7 @@ RUN set -e -x \
 \043!/bin/sh\n\
 [ $$ -eq 1 ] && exec dumb-init -r 15:1 -- "$0" "$@"\n\
 \n\
+sysctl -q net.ipv6.conf.all.forwarding=1\n\
 /usr/lib/frr/watchfrr.sh start all\n\
 sleep 1\n\
 service frr start\n\
