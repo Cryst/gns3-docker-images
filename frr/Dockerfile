@@ -16,6 +16,9 @@ RUN set -e -x \
     && sed -i '/^ *\(bgp\|ospf\|ospf6\|rip\|ripng\)d *=/ s/=.*/=yes/' /etc/frr/daemons \
     && sed -i 's|^\(log.*\)|#\1\nlog file /var/log/frr/frr.log informational|' /etc/frr/frr.conf \
     && printf '\nexport VTYSH_PAGER="less -M -i -EFX"\n' >> /root/.profile \
+#
+# startup script
+#
     && printf '\
 \043!/bin/sh\n\
 [ $$ -eq 1 ] && exec dumb-init -r 15:1 -- "$0" "$@"\n\
@@ -26,7 +29,7 @@ sleep 1\n\
 service frr start\n\
 \n\
 cd /etc/frr\n\
-. /root/.profile\n\
+[ -r /root/.profile ] && . /root/.profile\n\
 vtysh\n\
 exec bash -i\n' \
         > /etc/init.sh && chmod +x /etc/init.sh
