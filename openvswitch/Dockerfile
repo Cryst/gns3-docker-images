@@ -13,6 +13,11 @@ RUN set -e -x -o pipefail \
     && mkdir -p /usr/local/sbin \
     && wget -q -O /usr/local/sbin/nodnsd https://git.bernhard-ehlers.de/ehlers/nodnsd/releases/download/v0.1/nodnsd_linux_amd64.bin \
     && chmod 755 /usr/local/sbin/nodnsd \
+    && printf '\
+export PATH="$PATH:/usr/share/openvswitch/scripts"\n\
+export LESS="-M -i"\n\
+export PAGER="less -s"\n' \
+       >> /root/.profile \
 #
 # startup script
 #
@@ -23,12 +28,9 @@ RUN set -e -x -o pipefail \
 \n\
 nodnsd\n\
 \n\
-export PATH="$PATH:/usr/share/openvswitch/scripts"\n\
-export LESS="-M -i"\n\
-export PAGER="less -s"\n\
-\n\
 /etc/ovs_init.sh\n\
 \n\
+[ -r /root/.profile ] && . /root/.profile\n\
 if [ $# -gt 0 ]; then\n\
 	exec "$@"\n\
 else\n\
