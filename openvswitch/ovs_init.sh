@@ -37,7 +37,9 @@ if [ ! -f "/etc/openvswitch/conf.db" ]; then
 
 	# add eth interfaces without network configuration to br0
 	sed -n 's/^ *\(eth[0-9]*\):.*/\1/p' /proc/net/dev | while read -r if; do
-		grep -q -s "^iface  *${if}[. ]" /etc/network/interfaces || \
+		grep -q -s -E \
+		     "^[[:blank:]]*iface[[:blank:]]+${if}[[:blank:].:]" \
+		     /etc/network/interfaces || \
 			ovs-vsctl add-port br0 "$if"
 	done
 else
@@ -48,6 +50,14 @@ fi
 # activate internal bridge interfaces
 ovs-vsctl --bare -f table --columns=name find interface type=internal | while read -r if; do
 	ip link set dev "$if" up
+done
+
+# configure non-lo/eth interfaces of /etc/network/interfaces
+sed -n -E -e '/^[[:blank:]]*iface[[:blank:]]+(lo|eth)/d' \
+    -e 's/^[[:blank:]]*iface[[:blank:]]+([a-zA-Z][^[:blank:]]*).*/\1/p' \
+    /etc/network/interfaces | \
+while read -r if; do
+	ifup -f "$if"
 done
 
 # run custom initialization script
