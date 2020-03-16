@@ -16,6 +16,10 @@ RUN set -e -x \
         dillo ca-certificates lxterminal jwm menu mousepad \
         net-tools iproute2 ifupdown isc-dhcp-client inetutils-ping \
         telnet traceroute procps nano vim-tiny \
+    && sed -i -e 's/^#timeout .*/timeout 20;/' -e 's/^#retry .*/retry 10;/' /etc/dhcp/dhclient.conf \
+    && mv /sbin/dhclient /sbin/dhclient.debian \
+    && printf '#!/bin/sh\n\nPATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\nexec /sbin/dhclient.debian -v "$@"\n' \
+        > /sbin/dhclient && chmod +x /sbin/dhclient \
     && rm -rf /var/lib/apt/lists/* \
     && ln -s /usr/bin/dillo /usr/local/bin/firefox \
 #

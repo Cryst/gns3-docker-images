@@ -9,7 +9,7 @@ RUN set -e -x \
     && echo 'proftpd-basic shared/proftpd/inetd_or_standalone string standalone' | debconf-set-selections \
     && apt-get -y --no-install-recommends install \
         dumb-init proftpd-basic tftpd-hpa openssh-server \
-        net-tools iproute2 ifupdown isc-dhcp-client inetutils-ping \
+        net-tools iproute2 ifupdown inetutils-ping \
         telnet traceroute procps nano vim-tiny \
     && rm -rf /var/lib/apt/lists/* \
 #

@@ -10,7 +10,7 @@ RUN set -e -x \
     && apt-get update \
     && apt-get -y --no-install-recommends install \
         dumb-init /tmp/python*.deb tacacs+ \
-        net-tools iproute2 ifupdown isc-dhcp-client inetutils-ping \
+        net-tools iproute2 ifupdown inetutils-ping \
         telnet traceroute procps nano vim-tiny \
     && rm -rf /var/lib/apt/lists/* \
 #
