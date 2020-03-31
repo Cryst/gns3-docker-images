@@ -29,13 +29,8 @@ RUN set -e -x \
 # install remaining tools
 #
     && apt-get -y --no-install-recommends install \
-        net-tools iproute2 ifupdown isc-dhcp-client inetutils-ping \
+        net-tools iproute2 ifupdown inetutils-ping \
         telnet traceroute procps nano vim-tiny \
-    && sed -i -e 's/^#timeout .*/timeout 20;/' -e 's/^#retry .*/retry 10;/' /etc/dhcp/dhclient.conf \
-    && mv /sbin/dhclient /sbin/dhclient.debian \
-    && printf '#!/bin/sh\n\nPATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\nexec /sbin/dhclient.debian -v "$@"\n' \
-        > /sbin/dhclient.wrapper && chmod +x /sbin/dhclient.wrapper \
-    && ln -s dhclient.wrapper /sbin/dhclient \
     && rm -rf /var/lib/apt/lists/* \
 #
 # setup BIRD
