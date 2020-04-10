@@ -3,6 +3,7 @@ FROM debian:buster-slim
 RUN set -e -x \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
+    && apt-get -y upgrade \
     && apt-get -y --no-install-recommends install \
         dumb-init rsyslog lnav \
         net-tools iproute2 ifupdown inetutils-ping \

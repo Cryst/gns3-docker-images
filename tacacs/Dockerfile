@@ -8,6 +8,7 @@ RUN set -e -x \
 #
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
+    && apt-get -y upgrade \
     && apt-get -y --no-install-recommends install \
         dumb-init /tmp/python*.deb tacacs+ \
         net-tools iproute2 ifupdown inetutils-ping \

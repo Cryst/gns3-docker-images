@@ -7,6 +7,7 @@ COPY ethloop.c /root/
 RUN set -e -x \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
+    && apt-get -y upgrade \
     && apt-get -y --no-install-recommends install \
         libpcap0.8 net-tools \
     && dpkg-query -f '${binary:Package}\n' -W | sort > /tmp/base_packages \

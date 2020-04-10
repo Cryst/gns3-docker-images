@@ -9,8 +9,9 @@ RUN set -e -x \
 # install ostinato
 #
     && export DEBIAN_FRONTEND=noninteractive \
-    && echo 'wireshark-common wireshark-common/install-setuid boolean false' | debconf-set-selections \
     && apt-get update \
+    && apt-get -y upgrade \
+    && echo 'wireshark-common wireshark-common/install-setuid boolean false' | debconf-set-selections \
     && apt-get -y --no-install-recommends install \
         dumb-init /tmp/ostinato*.deb wireshark tshark \
         dillo ca-certificates lxterminal jwm menu mousepad \

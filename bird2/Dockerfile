@@ -5,6 +5,7 @@ FROM debian:buster-slim
 RUN set -e -x \
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
+    && apt-get -y upgrade \
 #
 # download, compile and install bird v2
 #

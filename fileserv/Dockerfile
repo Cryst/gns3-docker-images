@@ -6,6 +6,7 @@ RUN set -e -x \
 #
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
+    && apt-get -y upgrade \
     && echo 'proftpd-basic shared/proftpd/inetd_or_standalone string standalone' | debconf-set-selections \
     && apt-get -y --no-install-recommends install \
         dumb-init proftpd-basic tftpd-hpa openssh-server \
