@@ -6,7 +6,9 @@ RUN set -e -x -o pipefail \
 #
 # install busybox-extras, dumb-init and nodnsd
 #
-    && apk --no-cache add busybox-extras dumb-init \
+    && apk upgrade \
+    && apk add busybox-extras dumb-init \
+    && rm -rf /var/cache/apk/* \
     && mkdir -p /usr/local/sbin \
     && wget -q -O /usr/local/sbin/nodnsd https://git.bernhard-ehlers.de/ehlers/nodnsd/releases/download/v0.1/nodnsd_linux_amd64.bin \
     && chmod 755 /usr/local/sbin/nodnsd \

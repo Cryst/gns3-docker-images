@@ -8,8 +8,10 @@ RUN set -e -x -o pipefail \
 #
 # install openvswitch and dumb-init, nano, nodnsd
 #
-    && apk --no-cache add dumb-init nano \
+    && apk upgrade \
+    && apk add dumb-init nano \
        openvswitch openvswitch-doc mdocml less \
+    && rm -rf /var/cache/apk/* \
     && mkdir -p /usr/local/sbin \
     && wget -q -O /usr/local/sbin/nodnsd https://git.bernhard-ehlers.de/ehlers/nodnsd/releases/download/v0.1/nodnsd_linux_amd64.bin \
     && chmod 755 /usr/local/sbin/nodnsd \
