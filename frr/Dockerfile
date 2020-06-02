@@ -16,6 +16,7 @@ RUN set -e -x \
     && sed -i '/^ *\(bgp\|ospf\|ospf6\|rip\|ripng\)d *=/ s/=.*/=yes/' /etc/frr/daemons \
     && sed -i 's|^\(log.*\)|#\1\nlog file /var/log/frr/frr.log informational|' /etc/frr/frr.conf \
     && printf '\nexport VTYSH_PAGER="less -M -i -EFX"\n' >> /root/.profile \
+    && printf '\ncd /etc/frr\nvtysh\n' >> /root/.profile \
 #
 # startup script
 #
@@ -28,10 +29,7 @@ sysctl -q net.ipv6.conf.all.forwarding=1\n\
 sleep 1\n\
 service frr start\n\
 \n\
-cd /etc/frr\n\
-[ -r /root/.profile ] && . /root/.profile\n\
-vtysh\n\
-exec bash -i\n' \
+exec bash -i -l\n' \
         > /etc/init.sh && chmod +x /etc/init.sh
 
 VOLUME [ "/root", "/etc/frr" ]

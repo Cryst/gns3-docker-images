@@ -54,7 +54,7 @@ logview\n\
 echo\n\
 echo "Use \"logview\" to view the logs."\n\
 echo\n\
-exec bash -i\n' \
+exec bash -i -l\n' \
         > /etc/init.sh && chmod +x /etc/init.sh
 
 VOLUME [ "/root", "/var/log" ]

@@ -36,7 +36,7 @@ if [ $? -ne 0 ]; then\n\
 	ln -sf /etc/ansible/etc_hosts /etc/hosts\n\
 fi\n\
 \n\
-cd; exec bash -i\n' \
+cd; exec bash -i -l\n' \
         > /etc/init.sh && chmod +x /etc/init.sh
 
 VOLUME [ "/root", "/etc/ansible" ]

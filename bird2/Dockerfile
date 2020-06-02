@@ -41,7 +41,7 @@ RUN set -e -x \
 \n\
 bird\n\
 cd /etc/bird\n\
-exec bash -i\n' \
+exec bash -i -l\n' \
         > /etc/init.sh && chmod +x /etc/init.sh \
     && printf '\
 \043!/usr/bin/awk -f\n\

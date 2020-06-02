@@ -87,7 +87,7 @@ service proftpd start\n\
 service tftpd-hpa start\n\
 service ssh start\n\
 \n\
-cd; exec bash -i\n' \
+cd; exec bash -i -l\n' \
         > /etc/init.sh && chmod +x /etc/init.sh
 
 VOLUME [ "/etc/ssh", "/ftp" ]

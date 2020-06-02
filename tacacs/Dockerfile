@@ -61,7 +61,7 @@ service tacacs_plus stop\n' \
 service tacacs_plus start\n\
 \n\
 cd /etc/tacacs+\n\
-exec bash -i\n' \
+exec bash -i -l\n' \
         > /etc/init.sh && chmod +x /etc/init.sh
 
 VOLUME [ "/etc/tacacs+" ]

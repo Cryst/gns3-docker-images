@@ -3,4 +3,4 @@
 FROM ehlers/ipterm-base
 
 VOLUME [ "/root" ]
-CMD [ "sh", "-c", "cd; exec bash -i" ]
+CMD [ "sh", "-c", "cd; exec bash -i -l" ]

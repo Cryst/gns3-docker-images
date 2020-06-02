@@ -17,4 +17,4 @@ RUN set -e -x \
     && rm -rf /var/lib/apt/lists/*
 
 VOLUME [ "/root" ]
-CMD [ "sh", "-c", "cd; exec bash -i" ]
+CMD [ "sh", "-c", "cd; exec bash -i -l" ]
