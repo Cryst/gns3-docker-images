@@ -32,11 +32,10 @@ nodnsd\n\
 \n\
 /etc/ovs_init.sh\n\
 \n\
-[ -r /root/.profile ] && . /root/.profile\n\
 if [ $# -gt 0 ]; then\n\
 	exec "$@"\n\
 else\n\
-	cd; exec ash -i\n\
+	cd; exec ash -i -l\n\
 fi\n' \
        > /etc/init.sh && chmod +x /etc/init.sh
 
