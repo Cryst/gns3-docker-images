@@ -22,7 +22,7 @@ docker_build_image() {
 		docker build $DOCKER_BUILD_OPTIONS -t ehlers/ipterm-base ipterm/base
 		docker build $DOCKER_BUILD_OPTIONS -t ehlers/ipterm ipterm/cli
 		docker build $DOCKER_BUILD_OPTIONS -t ehlers/webterm ipterm/web
-		docker build $DOCKER_BUILD_OPTIONS -t ehlers/web_java ipterm/java
+		# docker build $DOCKER_BUILD_OPTIONS -t ehlers/web_java ipterm/java
 	elif [ -f "$path/Dockerfile" ]; then
 		tag=$(echo "$path" | sed 's/\+/\//')
 		docker build $DOCKER_BUILD_OPTIONS -t "$tag" "$path"

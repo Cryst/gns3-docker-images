@@ -7,7 +7,7 @@ mkdir -p packages
 docker run --entrypoint "" --rm debian:buster-slim dpkg -l > packages/debian_buster
 docker run --entrypoint "" --rm ehlers/ipterm dpkg -l > packages/ipterm
 docker run --entrypoint "" --rm ehlers/webterm dpkg -l > packages/webterm
-docker run --entrypoint "" --rm ehlers/web_java dpkg -l > packages/web_java
+# docker run --entrypoint "" --rm ehlers/web_java dpkg -l > packages/web_java
 
 # Debian based images
 grep -ilE '^FROM .*\b(debian|ipterm|webterm)' */Dockerfile | while read -r dockerfile; do

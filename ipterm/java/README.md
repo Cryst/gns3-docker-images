@@ -1,4 +1,6 @@
-# web_java - Firefox Web Browser, Java-8 and Java Web Start
+# [Deprecated] web_java - Firefox Web Browser, Java-8 and Java Web Start
+
+## Warning: Doesn't work with newer ASAv versions, for example v9.12 from CML 2
 
 This image contains the Firefox web browser, Java-8 and
 Java web start. Please note, that Firefox has disabled
