@@ -11,4 +11,4 @@ controlling interface, connect it via a cloud connection
 to the outside and setup IP in the node configuration.
 
 For more information see http://ostinato.org/ and
-http://www.bernhard-ehlers.de/projects/ostinato4gns3/index.html
+http://www.b-ehlers.de/projects/ostinato4gns3/index.html

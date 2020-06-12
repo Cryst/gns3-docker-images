@@ -25,7 +25,7 @@ ostinato (${DEB_VERSION}) unstable; urgency=low
 
   * Revision $(git rev-parse --short=12 --verify HEAD)
 
- -- Bernhard Ehlers <be@bernhard-ehlers.de>  $(TZ=CET date -R)
+ -- Bernhard Ehlers <none@b-ehlers.de>  $(TZ=CET date -R)
 
 EOF
 mv debian/changelog.new debian/changelog

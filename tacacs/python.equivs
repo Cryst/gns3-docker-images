@@ -15,7 +15,7 @@ Standards-Version: 3.9.2
 
 Package: python
 Version: 3
-Maintainer: Bernhard Ehlers <be@example.com>
+Maintainer: Bernhard Ehlers <none@b-ehlers.de>
 Depends: python3
 Architecture: all
 Links: python3 /usr/bin/python

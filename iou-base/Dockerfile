@@ -12,8 +12,8 @@ RUN set -e -x -o pipefail \
 #
     && apk add python3 \
     && rm -rf /var/cache/apk/* \
-    && wget -q -P /usr/local/bin https://git.bernhard-ehlers.de/ehlers/IOUtools/raw/branch/master/iou_import \
-    && wget -q -P /usr/local/bin https://git.bernhard-ehlers.de/ehlers/IOUtools/raw/branch/master/iou_export \
+    && wget -q -P /usr/local/bin https://git.b-ehlers.de/ehlers/IOUtools/raw/branch/master/iou_import \
+    && wget -q -P /usr/local/bin https://git.b-ehlers.de/ehlers/IOUtools/raw/branch/master/iou_export \
     && chmod +x /usr/local/bin/iou_import /usr/local/bin/iou_export
 
 ADD libc-i386.tar.gz /

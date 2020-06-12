@@ -6,7 +6,7 @@ The alpine appliance has two major annoyances:
 
 This appliance fixes that by using two programs:
 - dumb-init, see https://github.com/Yelp/dumb-init
-- nodnsd, see https://git.bernhard-ehlers.de/ehlers/nodnsd
+- nodnsd, see https://git.b-ehlers.de/ehlers/nodnsd
 
 Additionally it adds:
 - package busybox-extras, provides dnsd, fakeidentd, ftpd, ftpget, ftpput,

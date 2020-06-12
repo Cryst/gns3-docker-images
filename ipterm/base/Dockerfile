@@ -11,8 +11,8 @@ RUN set -e -x \
 #
 # install mtools (msend & mreceive)
 #
-    && curl -f -s -S -L -o /usr/local/bin/msend https://git.bernhard-ehlers.de/ehlers/mtools/releases/download/v2.3/msend_linux_amd64.bin \
-    && curl -f -s -S -L -o /usr/local/bin/mreceive https://git.bernhard-ehlers.de/ehlers/mtools/releases/download/v2.3/mreceive_linux_amd64.bin \
+    && curl -f -s -S -L -o /usr/local/bin/msend https://git.b-ehlers.de/ehlers/mtools/releases/download/v2.3/msend_linux_amd64.bin \
+    && curl -f -s -S -L -o /usr/local/bin/mreceive https://git.b-ehlers.de/ehlers/mtools/releases/download/v2.3/mreceive_linux_amd64.bin \
     && chown root:root /usr/local/bin/msend /usr/local/bin/mreceive \
     && chmod 755 /usr/local/bin/msend /usr/local/bin/mreceive \
 #
