@@ -55,7 +55,7 @@ RUN set -e -x \
 [General]\n\
 RateAccuracy=Low\n\
 [PortList]\n\
-Include=eth*\n' \
+Exclude=any,lo*\n' \
         > /root/.config/Ostinato/drone.ini \
 #
 # configure wireshark
@@ -77,6 +77,13 @@ fgcolor=#ffffff\n' \
 \043!/bin/sh\n\
 [ $$ -eq 1 ] && exec dumb-init -- "$0" "$@"\n\
 \n\
+\043 disable ostinato update, makes no sense in this environment\n\
+grep -q -w -F update.ostinato.org /etc/hosts || \\\n\
+	printf "\\n# disable ostinato update\\n127.0.0.127\\tupdate.ostinato.org\\n" >> /etc/hosts\n\
+\n\
+\043 just run ostinato when started outside GNS3\n\
+[ -z "$GNS3_MAX_ETHERNET" ] && exec ostinato\n\
+\n\
 \043 on unconfigured interfaces disable IPv6, set MTU to 9000\n\
 sed -n '\''s/^ *\\(eth[0-9]*\\):.*/\\1/p'\'' /proc/net/dev | sort > /tmp/netdev\n\
 sed -n '\''s/^iface  *\\(eth[0-9]*\\).*/\\1/p'\'' /etc/network/interfaces | sort -u > /tmp/confdev\n\
@@ -88,13 +95,6 @@ comm -13 /tmp/confdev /tmp/netdev | while read -r DEVICE; do\n\
 done\n\
 rm /tmp/confdev /tmp/netdev\n\
 sleep 0.5\n\
-\n\
-\043 disable ostinato update, makes no sense in this environment\n\
-grep -q -w -F update.ostinato.org /etc/hosts || \\\n\
-	printf "\\n# disable ostinato update\\n127.0.0.127\\tupdate.ostinato.org\\n" >> /etc/hosts\n\
-\n\
-\043 wireshark wants a /etc/machine-id\n\
-dd if=/dev/urandom bs=16 count=1 2>/dev/null | od -An -x | tr -d " " > /etc/machine-id\n\
 \n\
 \043 workaround: sometimes the first start of an X application fails\n\
 lxterminal -e true 2> /dev/null\n\

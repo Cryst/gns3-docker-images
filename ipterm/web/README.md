@@ -3,6 +3,9 @@
 This image adds the Firefox web browser to ipterm-base.
 Like ipterm, the /root directory is persistent.
 
+Warning: This appliance is optimized to run within GNS3,
+it doesn't work well outside the GNS3 environment.
+
 This appliance contains the following networking tools:
 
 - Firefox web browser
