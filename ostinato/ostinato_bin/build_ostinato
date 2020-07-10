@@ -20,15 +20,18 @@ if [ -z "$DEB_VERSION" ]; then
 fi
 
 # update changelog
-cat - debian/changelog > debian/changelog.new << EOF
-ostinato (${DEB_VERSION}) unstable; urgency=low
+prev_version=$(sed -n '1s/^[^(]*(\([^)]*\).*/\1/p' debian/changelog)
+if [ "$DEB_VERSION" != "$prev_version" ]; then
+	cat - debian/changelog > debian/changelog.new <<- EOF
+	ostinato (${DEB_VERSION}) unstable; urgency=low
 
-  * Revision $(git rev-parse --short=12 --verify HEAD)
+	  * Revision $(git rev-parse --short=12 --verify HEAD)
 
- -- Bernhard Ehlers <none@b-ehlers.de>  $(TZ=CET date -R)
+	 -- Bernhard Ehlers <none@b-ehlers.de>  $(TZ=CET date -R)
 
-EOF
-mv debian/changelog.new debian/changelog
+	EOF
+	mv debian/changelog.new debian/changelog
+fi
 
 # install build dependencies
 # https://stackoverflow.com/questions/47632014/how-to-install-a-debian-packages-build-depends-and-depends
