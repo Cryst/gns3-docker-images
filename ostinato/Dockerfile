@@ -14,7 +14,7 @@ RUN set -e -x \
     && echo 'wireshark-common wireshark-common/install-setuid boolean false' | debconf-set-selections \
     && apt-get -y --no-install-recommends install \
         dumb-init /tmp/ostinato*.deb wireshark tshark \
-        dillo ca-certificates lxterminal jwm menu mousepad \
+        dillo ca-certificates lxterminal jwm menu mousepad wmctrl \
         net-tools iproute2 ifupdown inetutils-ping \
         telnet traceroute procps nano vim-tiny \
     && rm -rf /var/lib/apt/lists/* \
@@ -81,28 +81,33 @@ fgcolor=#ffffff\n' \
 grep -q -w -F update.ostinato.org /etc/hosts || \\\n\
 	printf "\\n# disable ostinato update\\n127.0.0.127\\tupdate.ostinato.org\\n" >> /etc/hosts\n\
 \n\
-\043 just run ostinato when started outside GNS3\n\
-[ -z "$GNS3_MAX_ETHERNET" ] && exec ostinato\n\
-\n\
-\043 on unconfigured interfaces disable IPv6, set MTU to 9000\n\
-sed -n '\''s/^ *\\(eth[0-9]*\\):.*/\\1/p'\'' /proc/net/dev | sort > /tmp/netdev\n\
-sed -n '\''s/^iface  *\\(eth[0-9]*\\).*/\\1/p'\'' /etc/network/interfaces | sort -u > /tmp/confdev\n\
-comm -13 /tmp/confdev /tmp/netdev | while read -r DEVICE; do\n\
-	ip link set dev "$DEVICE" down\n\
-	sysctl -q -w "net.ipv6.conf.${DEVICE}.disable_ipv6=1"\n\
-	ip link set dev "$DEVICE" mtu 9000\n\
-	ip link set dev "$DEVICE" up\n\
-done\n\
-rm /tmp/confdev /tmp/netdev\n\
-sleep 0.5\n\
+\043 on unconfigured GNS3 interfaces disable IPv6, set MTU to 9000\n\
+if [ -n "$GNS3_MAX_ETHERNET" ]; then\n\
+	sed -n '\''s/^ *\\(eth[0-9]*\\):.*/\\1/p'\'' /proc/net/dev | sort > /tmp/netdev\n\
+	sed -n '\''s/^iface  *\\(eth[0-9]*\\).*/\\1/p'\'' /etc/network/interfaces | sort -u > /tmp/confdev\n\
+	comm -13 /tmp/confdev /tmp/netdev | while read -r DEVICE; do\n\
+		ip link set dev "$DEVICE" down\n\
+		sysctl -q -w "net.ipv6.conf.${DEVICE}.disable_ipv6=1"\n\
+		ip link set dev "$DEVICE" mtu 9000\n\
+		ip link set dev "$DEVICE" up\n\
+	done\n\
+	rm /tmp/confdev /tmp/netdev\n\
+	sleep 0.5\n\
+fi\n\
 \n\
 \043 workaround: sometimes the first start of an X application fails\n\
 lxterminal -e true 2> /dev/null\n\
 \n\
 cd\n\
 export SHELL=/bin/bash\n\
-ostinato > /var/log/ostinato.log 2>&1 &\n\
-jwm\n' \
+\n\
+\043 start ostinato, optionally a windows manager if none is active\n\
+if wmctrl -m > /dev/null 2>&1; then\n\
+	ostinato > /var/log/ostinato.log 2>&1\n\
+else\n\
+	ostinato > /var/log/ostinato.log 2>&1 &\n\
+	jwm\n\
+fi\n' \
         > /etc/init.sh && chmod +x /etc/init.sh
 
 VOLUME [ "/root" ]

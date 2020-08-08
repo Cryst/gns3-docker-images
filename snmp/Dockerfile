@@ -22,7 +22,7 @@ RUN set -e -x \
     && apt-get update \
     && apt-get -y --no-install-recommends install \
         snmp snmp-mibs-downloader libxtst6 \
-        dillo ca-certificates  lxterminal jwm menu mousepad \
+        dillo ca-certificates  lxterminal jwm menu mousepad wmctrl \
     && rm -rf /var/lib/apt/lists/* \
     && sed -i -e 's/^mibs/#mibs/' /etc/snmp/snmp.conf \
 #
@@ -98,8 +98,14 @@ lxterminal -e true 2> /dev/null\n\
 \n\
 cd\n\
 export SHELL=/bin/bash\n\
-MibBrowser &\n\
-jwm\n' \
+\n\
+\043 start MibBrowser, optionally a windows manager if none is active\n\
+if wmctrl -m > /dev/null 2>&1; then\n\
+	MibBrowser\n\
+else\n\
+	MibBrowser &\n\
+	jwm\n\
+fi\n' \
         > /etc/init.sh && chmod +x /etc/init.sh
 
 VOLUME [ "/root" ]
