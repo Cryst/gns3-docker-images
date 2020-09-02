@@ -37,10 +37,13 @@ if [ ! -f "/etc/openvswitch/conf.db" ]; then
 
 	# add eth interfaces without network configuration to br0
 	sed -n 's/^ *\(eth[0-9]*\):.*/\1/p' /proc/net/dev | while read -r if; do
+		ofport=${if#eth}
+		[ "$ofport" -eq 0 ] && ofport=1000
 		grep -q -s -E \
 		     "^[[:blank:]]*iface[[:blank:]]+${if}[[:blank:].:]" \
 		     /etc/network/interfaces || \
-			ovs-vsctl add-port br0 "$if"
+			ovs-vsctl add-port br0 "$if" -- \
+			          set interface "$if" ofport_request="$ofport"
 	done
 else
 	# use existing database and start the daemons
