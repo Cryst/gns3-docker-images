@@ -54,18 +54,16 @@ RUN set -e -x \
     && printf '\
 \043!/bin/sh\n\
 \n\
-serve=y\n\
 port=7878\n\
 while getopts '\'':dhvp:'\'' opt; do\n\
 	case "$opt" in\n\
 	    p)   port="$OPTARG" ;;\n\
-	    h|v) serve= ;;\n\
-	    *)   ;;\n\
+	    d)   ;;\n\
+	    *)   exec "${0#-}.real" "$@" ;;\n\
 	esac\n\
 done\n\
 \n\
-[ -n "$serve" ] && netstat -n -l -t | grep -q -F ":${port} " && exit 0\n\
-exec "${0#-}.real" "$@"\n' \
+exec flock -n -E 0 -F "/var/lock/drone.$port" "${0#-}.real" "$@"\n' \
         > /usr/bin/drone && chmod +x /usr/bin/drone \
 #
 # configure ostinato drone
@@ -123,7 +121,6 @@ export SHELL=/bin/bash\n\
 \n\
 \043 start drone\n\
 drone < /dev/null > /var/log/ostinato-drone.log 2>&1 &\n\
-sleep 0.5\n\
 \n\
 \043 start ostinato, optionally a windows manager if none is active\n\
 if wmctrl -m > /dev/null 2>&1; then\n\
