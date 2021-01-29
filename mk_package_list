@@ -1,27 +1,47 @@
 #!/bin/sh
 # create a package list for every docker image in a "packages" directory
 
+update_package_list()
+{
+	# update package list if image is newer
+	# usage: update_package_list <image> <package list> <update command>
+
+	image=$1; shift
+	package_list=$1; shift
+
+	date_image=$(docker inspect --format='{{.Created}}' "$image")
+	[ -z "$date_image" ] && return 1
+	date_image=$(date -d "$date_image" +%s)
+	if [ -e "$package_list" ]; then
+		if [ ! -f "$package_list" ]; then
+			echo "$package_list: can't update, not a regular file" >&2
+			return 1
+		fi
+		[ "$(stat -c %Y "$package_list")" -ge "$date_image" ] && \
+			return 1
+	fi
+	docker run --entrypoint "" --rm "$image" "$@" | sort > "$package_list"
+}
+
 mkdir -p packages
 
 # Debian based base images
-docker run --entrypoint "" --rm debian:buster-slim dpkg -l > packages/debian_buster
-docker run --entrypoint "" --rm ehlers/ipterm dpkg -l > packages/ipterm
-docker run --entrypoint "" --rm ehlers/webterm dpkg -l > packages/webterm
-# docker run --entrypoint "" --rm ehlers/web_java dpkg -l > packages/web_java
+update_package_list debian:buster-slim packages/debian_buster dpkg -l
+update_package_list ehlers/ipterm packages/ipterm dpkg -l
+update_package_list ehlers/webterm packages/webterm dpkg -l
+# update_package_list ehlers/web_java packages/web_java dpkg -l
 
 # Debian based images
-grep -ilE '^FROM .*\b(debian|ipterm|webterm)' */Dockerfile | while read -r dockerfile; do
+grep -ilE '^FROM .*\b(debian|ipterm|webterm)' -- */Dockerfile | while read -r dockerfile; do
 	image=$(dirname "$dockerfile")
-	docker inspect $image > /dev/null || continue
-	docker run --entrypoint "" --rm $image dpkg -l > packages/$image
+	update_package_list "$image" "packages/$image" dpkg -l
 done
 
 # Alpine base image
-docker run --entrypoint "" --rm alpine apk list -q -I | sort > packages/alpine
+update_package_list alpine packages/alpine alpine apk list -q -I
 
 # Alpine based images
-grep -il '^FROM alpine' */Dockerfile | while read -r dockerfile; do
+grep -il '^FROM alpine' -- */Dockerfile | while read -r dockerfile; do
 	image=$(dirname "$dockerfile")
-	docker inspect $image > /dev/null || continue
-	docker run --entrypoint "" --rm $image apk list -q -I | sort > packages/$image
+	update_package_list "$image" "packages/$image" apk list -q -I
 done
