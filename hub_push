@@ -7,7 +7,7 @@
 
 set -e
 
-HUB_USER=$(docker info 2>/dev/null | sed -n 's/^Username:[[:space:]]*//p')
+HUB_USER=$(docker info 2>/dev/null | sed -n 's/^[[:space:]]*Username:[[:space:]]*//p')
 if [ -z "$HUB_USER" ]; then
 	echo 'Use "docker login" to login into DockerHub.' >&2
 	exit 1
