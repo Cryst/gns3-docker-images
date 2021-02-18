@@ -6,7 +6,7 @@ LIB_DIR=/libc-i386
 # install debian i386 libraries
 dpkg --add-architecture i386
 apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get -y install libssl1.0.0:i386
+DEBIAN_FRONTEND=noninteractive apt-get -y install libssl1.1:i386
 
 # copy i386 libraries
 mkdir -p "$LIB_DIR/lib/i386-linux-gnu"
@@ -16,13 +16,14 @@ cp -a /lib/i386-linux-gnu/libc[-.]* "$LIB_DIR/lib/i386-linux-gnu/"
 cp -a /lib/i386-linux-gnu/libdl[-.]* "$LIB_DIR/lib/i386-linux-gnu/"
 cp -a /lib/i386-linux-gnu/libgcc_s[-.]* "$LIB_DIR/lib/i386-linux-gnu/"
 cp -a /lib/i386-linux-gnu/libm[-.]* "$LIB_DIR/lib/i386-linux-gnu/"
+cp -a /lib/i386-linux-gnu/libnsl[-.]* "$LIB_DIR/lib/i386-linux-gnu/"
 cp -a /lib/i386-linux-gnu/libpthread[-.]* "$LIB_DIR/lib/i386-linux-gnu/"
 cp -a /usr/lib/i386-linux-gnu/libcrypto[-.]* "$LIB_DIR/lib/i386-linux-gnu/"
-ln -s libcrypto.so.1.0.0 "$LIB_DIR/lib/i386-linux-gnu/libcrypto.so.4"
+ln -s libcrypto.so.1.1 "$LIB_DIR/lib/i386-linux-gnu/libcrypto.so.4"
 
 # include copyright files
 DOC_DIR=$LIB_DIR/usr/share/doc/libc-i386
-for pkg in gcc-4.9-base libc6 libssl1.0.0; do
+for pkg in gcc-8-base libc6 libssl1.1; do
 	mkdir -p "$DOC_DIR/$pkg"
 	cp -a "/usr/share/doc/$pkg/copyright" "$DOC_DIR/$pkg/"
 done
@@ -31,5 +32,5 @@ done
 echo
 echo "Storing i386 libs into libc-i386.tar.gz..."
 echo
-tar -cvvzf /base/libc-i386.tar.gz -C "$LIB_DIR" $(ls $LIB_DIR)
+tar -cvvzf /base/libc-i386.tar.gz -C "$LIB_DIR" $(cd $LIB_DIR; echo lib/* usr/share/doc/*)
 chown --reference=/base /base/libc-i386.tar.gz
