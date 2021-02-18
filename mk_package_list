@@ -38,7 +38,7 @@ grep -ilE '^FROM .*\b(debian|ipterm|webterm)' -- */Dockerfile | while read -r do
 done
 
 # Alpine base image
-update_package_list alpine packages/alpine alpine apk list -q -I
+update_package_list alpine packages/alpine apk list -q -I
 
 # Alpine based images
 grep -il '^FROM alpine' -- */Dockerfile | while read -r dockerfile; do
