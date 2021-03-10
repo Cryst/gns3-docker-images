@@ -9,10 +9,10 @@ RUN set -e -x \
 #
 # download, compile and install bird v2
 #
-    && apt-get -y --no-install-recommends install libreadline7 \
+    && apt-get -y --no-install-recommends install libreadline7 libssh-4 openssh-client \
     && dpkg-query -f '${binary:Package}\n' -W | sort > /tmp/base_packages \
     && apt-get -y --no-install-recommends install \
-        curl gcc libc6-dev make bison flex libncurses-dev libreadline-dev \
+        curl gcc libc6-dev make bison flex libncurses-dev libreadline-dev libssh-dev \
     && latest=$(curl -s -S ftp://bird.network.cz/pub/bird/ | sed -n 's/^.*LATEST-IS-\(2.*\)/\1/p') \
     && if [ -z "$latest" ]; then echo "Latest BIRD package not found" >&2; exit 1; fi \
     && curl -s -S "ftp://bird.network.cz/pub/bird/bird-$latest.tar.gz" | tar xz \
