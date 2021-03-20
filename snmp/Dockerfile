@@ -99,11 +99,13 @@ lxterminal -e true 2> /dev/null\n\
 cd\n\
 export SHELL=/bin/bash\n\
 \n\
-\043 start MibBrowser, optionally a windows manager if none is active\n\
+\043 start MibBrowser\n\
+MibBrowser &\n\
+\n\
+\043 start a windows manager if none is active\n\
 if wmctrl -m > /dev/null 2>&1; then\n\
-	MibBrowser\n\
+	wait $!\n\
 else\n\
-	MibBrowser &\n\
 	jwm\n\
 fi\n' \
         > /etc/init.sh && chmod +x /etc/init.sh

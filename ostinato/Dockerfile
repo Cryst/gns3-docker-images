@@ -122,11 +122,13 @@ export SHELL=/bin/bash\n\
 \043 start drone\n\
 drone < /dev/null > /var/log/ostinato-drone.log 2>&1 &\n\
 \n\
-\043 start ostinato, optionally a windows manager if none is active\n\
+\043 start ostinato\n\
+ostinato > /var/log/ostinato.log 2>&1 &\n\
+\n\
+\043 start a windows manager if none is active\n\
 if wmctrl -m > /dev/null 2>&1; then\n\
-	ostinato > /var/log/ostinato.log 2>&1\n\
+	wait $!\n\
 else\n\
-	ostinato > /var/log/ostinato.log 2>&1 &\n\
 	jwm\n\
 fi\n' \
         > /etc/init.sh && chmod +x /etc/init.sh
