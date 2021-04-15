@@ -103,11 +103,7 @@ export SHELL=/bin/bash\n\
 MibBrowser &\n\
 \n\
 \043 start a windows manager if none is active\n\
-if wmctrl -m > /dev/null 2>&1; then\n\
-	wait $!\n\
-else\n\
-	jwm\n\
-fi\n' \
+wmctrl -m > /dev/null 2>&1 && wait $! || jwm\n' \
         > /etc/init.sh && chmod +x /etc/init.sh
 
 VOLUME [ "/root" ]
