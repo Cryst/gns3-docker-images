@@ -29,7 +29,6 @@ mkdir -p packages
 update_package_list debian:buster-slim packages/debian_buster dpkg -l
 update_package_list ehlers/ipterm packages/ipterm dpkg -l
 update_package_list ehlers/webterm packages/webterm dpkg -l
-# update_package_list ehlers/web_java packages/web_java dpkg -l
 
 # Debian based images
 grep -ilE '^FROM .*\b(debian|ipterm|webterm)' -- */Dockerfile | while read -r dockerfile; do

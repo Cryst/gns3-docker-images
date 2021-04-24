@@ -3,7 +3,6 @@
 ehlers/ipterm-base
 ehlers/ipterm
 ehlers/webterm
-# ehlers/web_java
 ansible
 bird2
 ethloop
