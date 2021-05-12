@@ -20,7 +20,11 @@ update_package_list()
 		[ "$(stat -c %Y "$package_list")" -ge "$date_image" ] && \
 			return 1
 	fi
-	docker run --entrypoint "" --rm "$image" "$@" | sort > "$package_list"
+	if [ "$1" = "apk" ]; then
+		docker run --entrypoint "" --rm "$image" "$@" | LANG=C sort > "$package_list"
+	else
+		docker run --entrypoint "" --rm "$image" "$@" > "$package_list"
+	fi
 }
 
 mkdir -p packages
