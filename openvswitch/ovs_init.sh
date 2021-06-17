@@ -22,6 +22,12 @@ cust_init="/etc/openvswitch/init.sh"
 
 export PATH="$PATH:/usr/share/openvswitch/scripts"
 
+if [ ! -e "/sys/module/openvswitch" ]; then
+       echo "[FATAL] Kernel module openvswitch not loaded." >&2
+       echo "        Load it in the host OS before using this container." >&2
+       exit 1
+fi
+
 if [ ! -f "/etc/openvswitch/conf.db" ]; then
 	# init database and start the daemons
 	cat /proc/sys/kernel/random/uuid > /etc/openvswitch/system-id.conf

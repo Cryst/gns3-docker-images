@@ -3,6 +3,9 @@
 This appliance provides an Open vSwitch, it's based on Alpine Linux.
 Open vSwitch is documented at <http://docs.openvswitch.org/en/stable/>.
 
+Before running this container you must load the openvswitch module
+in the host OS.
+
 This image is derived from the GNS3 appliance, for details see
 <https://github.com/GNS3/gns3-registry/tree/master/docker/openvswitch>
 
