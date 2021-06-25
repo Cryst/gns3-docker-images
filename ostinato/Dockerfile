@@ -15,7 +15,7 @@ RUN set -e -x \
     && apt-get -y --no-install-recommends install \
         dumb-init /tmp/ostinato*.deb wireshark tshark \
         dillo ca-certificates lxterminal jwm menu mousepad wmctrl \
-        net-tools iproute2 ifupdown inetutils-ping \
+        net-tools iproute2 ifupdown iputils-ping \
         telnet traceroute procps nano vim-tiny \
     && rm -rf /var/lib/apt/lists/* \
     && ln -s /usr/bin/dillo /usr/local/bin/firefox \

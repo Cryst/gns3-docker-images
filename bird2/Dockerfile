@@ -30,7 +30,7 @@ RUN set -e -x \
 # install remaining tools
 #
     && apt-get -y --no-install-recommends install \
-        net-tools iproute2 ifupdown inetutils-ping \
+        net-tools iproute2 ifupdown iputils-ping \
         telnet traceroute procps nano vim-tiny \
     && rm -rf /var/lib/apt/lists/* \
 #

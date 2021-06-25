@@ -6,7 +6,7 @@ RUN set -e -x \
     && apt-get -y upgrade \
     && apt-get -y --no-install-recommends install \
         dumb-init rsyslog lnav \
-        net-tools iproute2 ifupdown inetutils-ping \
+        net-tools iproute2 ifupdown iputils-ping \
         telnet traceroute procps nano vim-tiny \
     && rm -rf /var/lib/apt/lists/* \
 #
