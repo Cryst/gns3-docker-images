@@ -12,7 +12,10 @@ RUN set -e -x \
 
 # Main image
 FROM ehlers/ipterm-base
+
 COPY --from=0 /root/ManageEngine/ManageEngine_Free_Tools/MibBrowser_Free_Tool /opt/MibBrowser
+COPY RFC1271-MIB /var/lib/snmp/mibs/ietf/
+
 RUN set -e -x \
 #
 # install snmp cli tools
@@ -30,7 +33,6 @@ RUN set -e -x \
 #
     && ln -s /usr/bin/dillo /usr/local/bin/firefox \
     && mv /opt/MibBrowser/MibBrowserlogo.jpg /opt/MibBrowser/MibBrowserlogo.JPG \
-    &&  curl -s -S -L -o /var/lib/snmp/mibs/ietf/RFC1271-MIB https://www.simpleweb.org/ietf/mibs/modules/IETF/txt/RFC1271-MIB \
 #
 # customize jwm menu
 #
