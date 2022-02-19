@@ -1,6 +1,6 @@
 # docker image with basic networking tools and web browser
 
-FROM ehlers/ipterm-base
+FROM ch4c2h6/ipterm-base
 
 RUN set -e -x \
 #

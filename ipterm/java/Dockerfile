@@ -1,6 +1,6 @@
 # Web browser plus Java
 
-FROM ehlers/webterm
+FROM ch4c2h6/webterm
 
 RUN set -e -x \
 #
@@ -45,6 +45,12 @@ asa_ip=$(yad --entry --title="ASDM Launcher" \\\n\
 javaws "https://$asa_ip/admin/public/asdm.jnlp" < /dev/null\n' \
         > /usr/local/bin/start-asdm \
     && chmod +x /usr/local/bin/start-asdm \
+#
+# enable MD5
+#
+
+    && sed -i 's/jdk.jar.disabledAlgorithms=MD2, MD5, RSA keySize/jdk.jar.disabledAlgorithms=MD2, RSA keySize/' /etc/java-8-openjdk/security/java.security \
+
 #
 # startup script
 #
