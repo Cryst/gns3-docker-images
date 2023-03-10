@@ -17,6 +17,8 @@ This appliance contains the following networking tools:
 - Java-8 (OpenJDK 8 Java runtime environment)
 - Java web start / JNLP (IcedTea NetX)
 - Launcher for Cisco ASDM
+- PuTTY
+- snmp tools
 - net-tools (basic network administration tools)
 - iproute2 (advanced network administration tools)
 - ping and traceroute
