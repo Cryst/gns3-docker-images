@@ -1,6 +1,6 @@
-# web_java - Firefox Web Browser, Java-8 and Java Web Start
+# web_java - Firefox Web Browser, Filezilla, Java-8 and Java Web Start
 
-This image contains the Firefox web browser, Java-8 and
+This image contains the Firefox web browser, Filezilla, Java-8 and
 Java web start. Please note, that Firefox has disabled
 the Java plugin, so this is not included in this image.
 To ease the use with Cisco ASDM a laucher has been added.
@@ -13,6 +13,7 @@ which is necessary to run ASDM v6.xxx.
 This appliance contains the following networking tools:
 
 - Firefox web browser
+- Filezilla
 - Java-8 (OpenJDK 8 Java runtime environment)
 - Java web start / JNLP (IcedTea NetX)
 - Launcher for Cisco ASDM
