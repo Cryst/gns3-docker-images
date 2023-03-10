@@ -31,6 +31,13 @@ deb http://security.debian.org/debian-security stretch/updates main\n' \
  command="filezilla"\n' \
         > /etc/menu/filezilla \
     && printf '\
+?package(putty):\\\n\
+ needs="x11"\\\n\
+ section="Applications"\\\n\
+ title="PuTTY"\\\n\
+ command="putty"\n' \
+        > /etc/menu/putty \
+    && printf '\
 ?package(icedtea-netx):\\\n\
  needs="x11"\\\n\
  section="Applications"\\\n\
