@@ -4,7 +4,7 @@ FROM ch4c2h6/webterm
 
 RUN set -e -x \
 #
-# install Java v8 and Java Web Start
+# install filezilla snmp-tools putty nmap Java v8 and Java Web Start
 #
     && export DEBIAN_FRONTEND=noninteractive \
     && printf '\
@@ -17,7 +17,7 @@ deb http://security.debian.org/debian-security stretch/updates main\n' \
         icedtea-netx/stretch openjdk-8-jre/stretch java-common/stretch \
         fonts-dejavu-extra yad \
     && apt-mark hold icedtea-netx openjdk-8-jre java-common \
-    && apt-get -y --no-install-recommends install filezilla \
+    && apt-get -y --no-install-recommends install filezilla snmp putty nmap \
     && rm /etc/apt/sources.list.d/stretch.list \
     && rm -rf /var/lib/apt/lists/* \
 #
