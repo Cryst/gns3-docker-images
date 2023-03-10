@@ -1,4 +1,4 @@
-# web_java - Firefox Web Browser, Filezilla, Java-8 and Java Web Start
+# web_java - Firefox Web Browser, Putty, Filezilla, Java-8 and Java Web Start
 
 This image contains the Firefox web browser, Filezilla, Java-8 and
 Java web start. Please note, that Firefox has disabled
