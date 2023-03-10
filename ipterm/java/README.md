@@ -19,6 +19,7 @@ This appliance contains the following networking tools:
 - Launcher for Cisco ASDM
 - PuTTY
 - snmp tools
+- nmap
 - net-tools (basic network administration tools)
 - iproute2 (advanced network administration tools)
 - ping and traceroute
