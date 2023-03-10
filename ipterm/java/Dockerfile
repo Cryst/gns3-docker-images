@@ -17,11 +17,19 @@ deb http://security.debian.org/debian-security stretch/updates main\n' \
         icedtea-netx/stretch openjdk-8-jre/stretch java-common/stretch \
         fonts-dejavu-extra yad \
     && apt-mark hold icedtea-netx openjdk-8-jre java-common \
+    && apt-get -y --no-install-recommends install filezilla \
     && rm /etc/apt/sources.list.d/stretch.list \
     && rm -rf /var/lib/apt/lists/* \
 #
 # customize jwm menu
 #
+    && printf '\
+?package(filezilla):\\\n\
+ needs="x11"\\\n\
+ section="Applications"\\\n\
+ title="Filezilla"\\\n\
+ command="filezilla"\n' \
+        > /etc/menu/filezilla \
     && printf '\
 ?package(icedtea-netx):\\\n\
  needs="x11"\\\n\
@@ -50,6 +58,13 @@ javaws "https://$asa_ip/admin/public/asdm.jnlp" < /dev/null\n' \
 #
 
     && sed -i 's/jdk.jar.disabledAlgorithms=MD2, MD5, RSA keySize/jdk.jar.disabledAlgorithms=MD2, RSA keySize/' /etc/java-8-openjdk/security/java.security \
+
+#
+# enable Default Editor in Filezilla
+#
+
+    && sed -i 's/<Setting name="Default editor">0</<Setting name="Default editor">1</' /root/.config/filezilla/filezilla.xml \
+
 
 #
 # startup script
