@@ -16,7 +16,7 @@ This appliance contains the following networking tools:
 - Filezilla
 - Java-8 (OpenJDK 8 Java runtime environment)
 - Java web start / JNLP (IcedTea NetX)
-- Launcher for Cisco ASDM
+- Launcher for Cisco ASDM ## Warning: Java doesn't work with newer ASAv versions, for example v9.12
 - PuTTY
 - snmp tools
 - nmap
